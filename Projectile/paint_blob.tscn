@@ -1,0 +1,53 @@
+[gd_scene load_steps=7 format=3 uid="uid://1mf4nkenqt6o"]
+
+[ext_resource type="Script" uid="uid://b88ak7cgifvy" path="res://Projectile/paint_blob.gd" id="1_752xg"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_qkmf7"]
+radius = 0.25
+height = 0.5
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_8pytb"]
+radius = 0.175
+
+[sub_resource type="Animation" id="Animation_qkmf7"]
+resource_name = "Grow"
+tracks/0/type = "scale_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Mesh")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0.5, 0.5, 1, 0.466667, 1, 1, 1, 2)
+
+[sub_resource type="Animation" id="Animation_8pytb"]
+length = 0.001
+tracks/0/type = "scale_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Mesh")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 1, 1, 1)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_8pytb"]
+_data = {
+&"Grow": SubResource("Animation_qkmf7"),
+&"RESET": SubResource("Animation_8pytb")
+}
+
+[node name="PaintBlob" type="CharacterBody3D"]
+collision_layer = 2
+script = ExtResource("1_752xg")
+color = null
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_qkmf7")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_8pytb")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_8pytb")
+}
+autoplay = "Grow"

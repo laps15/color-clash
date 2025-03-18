@@ -1,0 +1,11 @@
+Model Information:
+* title:	Lowpoly Watergun
+* source:	https://sketchfab.com/3d-models/lowpoly-watergun-c9eb5afe553a4551b958ce8628ccd4f6
+* author:	rustard (https://sketchfab.com/rustard)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Lowpoly Watergun" (https://sketchfab.com/3d-models/lowpoly-watergun-c9eb5afe553a4551b958ce8628ccd4f6) by rustard (https://sketchfab.com/rustard) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

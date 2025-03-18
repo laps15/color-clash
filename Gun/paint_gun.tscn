@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=3 uid="uid://o3tu62qtwmmy"]
+
+[ext_resource type="PackedScene" uid="uid://hliq8cajjv5q" path="res://Gun/paint_emitter.tscn" id="2_dbrv2"]
+[ext_resource type="PackedScene" uid="uid://cpxb3t6csgplf" path="res://Gun/Resources/lowpoly_watergun/scene.gltf" id="3_bh045"]
+
+[sub_resource type="GDScript" id="GDScript_hi3di"]
+script/source = "extends Node3D
+
+@export var mag_size: int
+var bullets_on_mag: int
+
+@onready var paint_emitter = $PaintEmitter
+
+var rng = RandomNumberGenerator.new()
+
+func _ready() -> void:
+	self.bullets_on_mag = mag_size
+
+func can_shoot() -> bool:
+	return true
+
+func shoot(color: Color = Color.RED) -> void:
+	if can_shoot():
+		bullets_on_mag -= 1
+		paint_emitter.shoot(color)
+
+func reload() -> void:
+	bullets_on_mag = mag_size
+"
+
+[node name="PaintGun" type="Node3D"]
+script = SubResource("GDScript_hi3di")
+mag_size = 30
+
+[node name="Sketchfab_Scene" parent="." instance=ExtResource("3_bh045")]
+transform = Transform3D(-0.001, 0, 1.50996e-10, 0, 0.001, 0, -1.50996e-10, 0, -0.001, 0, 0, 0)
+
+[node name="PaintEmitter" parent="." instance=ExtResource("2_dbrv2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00467511, 0.0517168, -0.388499)

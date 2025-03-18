@@ -1,0 +1,73 @@
+[gd_scene load_steps=3 format=3 uid="uid://bxku631uy2onw"]
+
+[ext_resource type="Script" uid="uid://duht4jmjw804g" path="res://main.gd" id="1_kgo26"]
+[ext_resource type="PackedScene" uid="uid://deiyobjnr63y" path="res://Maps/composite_level.tscn" id="2_corfq"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_kgo26")
+
+[node name="Level" parent="." instance=ExtResource("2_corfq")]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.726575, 0.607224, -0.321509, 0, 0.46793, 0.883766, 0.687088, 0.642122, -0.339986, 294.031, 236.146, 98.5634)
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://deudk8msb5gpw")
+spawn_path = NodePath("..")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MainMenu" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 417.0
+offset_top = 219.0
+offset_right = -417.0
+offset_bottom = -219.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/MainMenu"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MainMenu/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Main Menu"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HostButton" type="Button" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Host"
+
+[node name="JoinButton" type="Button" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Join"
+
+[node name="AddressEntry" type="LineEdit" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Enter adress to join here"
+alignment = 1
+
+[connection signal="pressed" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
+
+[editable path="Level"]
+[editable path="Level/map_base"]
+[editable path="Level/map_base/bridge"]
+[editable path="Level/map_base/box_11"]
+[editable path="Level/map_base/box_12"]
+[editable path="Level/map_base/box_13"]
+[editable path="Level/map_base/box_21"]
+[editable path="Level/map_base/box_22"]
+[editable path="Level/map_base/box_23"]

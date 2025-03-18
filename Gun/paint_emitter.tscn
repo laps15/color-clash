@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://hliq8cajjv5q"]
+
+[ext_resource type="Script" uid="uid://cnem2h3nildq7" path="res://Gun/paint_emitter.gd" id="1_hi3di"]
+[ext_resource type="PackedScene" uid="uid://1mf4nkenqt6o" path="res://Projectile/paint_blob.tscn" id="2_dbrv2"]
+
+[node name="PaintEmitter" type="Node3D"]
+script = ExtResource("1_hi3di")
+paint_scene = ExtResource("2_dbrv2")
