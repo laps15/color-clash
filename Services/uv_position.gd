@@ -88,6 +88,9 @@ func get_uv_coords(mesh_unique_id: int, point, normal, transform = true):
 	# these values can be obtained from a raycast
 	transform_vertex_to_global = transform
   
+	if not mesh_unique_id in meshtool_dict:
+		return null
+
 	var face = get_face(mesh_unique_id, point, normal)
 	if face.size() < 3:
 		return null

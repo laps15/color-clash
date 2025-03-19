@@ -38,7 +38,6 @@ _data = {
 [node name="PaintBlob" type="CharacterBody3D"]
 collision_layer = 2
 script = ExtResource("1_752xg")
-color = null
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_qkmf7")

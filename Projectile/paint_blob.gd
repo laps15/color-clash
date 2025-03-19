@@ -7,6 +7,8 @@ class_name PaintBlob
 @onready var level_map = $"/root/Main/Level"
 @onready var mesh_instance = $Mesh
 
+@export var peer_id: String
+
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _ready() -> void:
@@ -15,8 +17,10 @@ func _ready() -> void:
 	self.mesh_instance.set_surface_override_material(0, material)
 
 func set_start_velocity():
-	print(str(global_transform.basis, "*" , Vector3.FORWARD, ") * ", self.speed))
 	self.velocity = (global_transform.basis * Vector3.FORWARD).normalized() * self.speed;
+	
+func set_peer_id(peer_id: String) -> void:
+	self.peer_id = str(peer_id)
 	
 func _physics_process(delta: float) -> void:
 	self.velocity.y -= gravity * delta
@@ -28,12 +32,5 @@ func _physics_process(delta: float) -> void:
 	if slide_collision_count > 0:
 		for i in range(slide_collision_count):
 			var collision = self.get_slide_collision(i)
-			var collision_target = collision.get_collider()
-			if collision_target is CharacterBody3D:
-				(collision_target as Player).take_damage.rpc_id(str(collision_target.name).to_int())
-				continue
-			print(str("Hit at ", collision_target))
-			var uv = UVPosition.get_uv_coords(collision_target.get_instance_id(), collision.get_position(), collision.get_normal(), true)
-			if uv:
-				level_map.paint(collision_target.get_instance_id(), uv, color)
+			ProcessProjectileCollisions.process_collision(collision, str(self.peer_id).to_int(), self.color)
 		self.queue_free()

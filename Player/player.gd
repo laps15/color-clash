@@ -9,7 +9,8 @@ class_name Player
 
 @export var color: Color
 
-var current_hp = 2
+# Player stats
+@export var current_hp = 2
 
 const SPEED = 10.0
 const JUMP_VELOCITY = 7.5
@@ -31,6 +32,9 @@ func _ready() -> void:
 func set_color(color: Color) -> void:
 	self.color = color
 	
+func set_current_hp(current_hp: int) -> void:
+	self.current_hp = current_hp
+	self.hud.update_hp(self.current_hp, self)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not self.is_multiplayer_authority():
@@ -47,7 +51,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("shoot") and not self.is_shooting() and not self.is_reloading():
 			self.play_shoot_effects.rpc()
 
-func _physics_process(delta: float) -> void:		
+func _physics_process(delta: float) -> void:
 	if not self.is_multiplayer_authority():
 		return
 
@@ -87,10 +91,11 @@ func is_reloading():
 @rpc("call_local")
 func play_shoot_effects() -> void:
 	if paint_gun.can_shoot():
-		print("Shooting...")
+		#print(str("At #", multiplayer.get_unique_id(), "Shooting.."))
 		anim_player.stop()
 		anim_player.play("Shoot")
-		paint_gun.shoot(self.color)
+		
+		paint_gun.shoot(str(self.name), self.color)
 
 @rpc("call_local")
 func play_reload_effects() -> void:
@@ -98,14 +103,24 @@ func play_reload_effects() -> void:
 	anim_player.stop()
 	anim_player.play("Reload")
 
-@rpc("any_peer")
+@rpc("any_peer", "call_local")
 func take_damage() -> void:
-	current_hp -= 1
+	if str(multiplayer.get_unique_id()) != str(self.name):
+		return
+		
+	print(str("At #", multiplayer.get_unique_id(), " applying damage to ", self.name))
+	self.set_current_hp(self.current_hp - 1)
 	if current_hp == 0:
+		#hud.increase_death_count()
 		hud.display_game_over(self)
+
+@rpc("call_local")
+func increase_kill_count() -> void:
+	print("On #", multiplayer.get_unique_id(), " increasing kill count")
 
 func die():
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	self
 	self.remove_body.rpc()
 
 @rpc("call_local")
@@ -114,7 +129,8 @@ func remove_body() -> void:
 
 func respawn() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	current_hp = 2
+	self.paint_gun.reload()
+	self.set_current_hp(2)
 	self.global_position = Vector3(randf_range(-10,10), 0, randf_range(-10, 10))
 	self.reveal_body.rpc()
 
@@ -125,6 +141,6 @@ func reveal_body() -> void:
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 	if anim_name == "Shoot":
 		anim_player.play("Idle" )
-	if anim_name == "Reloading":
+	if anim_name == "Reload":
 		paint_gun.reload()
 		anim_player.play("Idle" )

@@ -1,6 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://dqahacfl1sjqs"]
+[gd_scene load_steps=6 format=3 uid="uid://dqahacfl1sjqs"]
 
 [ext_resource type="Script" uid="uid://c4o0ohvx23nvw" path="res://Player/hud.gd" id="1_ns4kc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ho6en"]
+bg_color = Color(1, 0.054902, 0.054902, 0.188235)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n2snw"]
 bg_color = Color(0, 0, 0, 0.164706)
@@ -9,18 +12,14 @@ corner_radius_top_right = 15
 corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ho6en"]
-bg_color = Color(1, 0.054902, 0.054902, 0.188235)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ns4kc"]
+bg_color = Color(0.825622, 0, 0.127881, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sndvk"]
+bg_color = Color(0.191246, 0.519031, 0, 1)
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_ns4kc")
-
-[node name="Panel" type="Panel" parent="."]
-offset_left = 17.0
-offset_top = 14.0
-offset_right = 70.0
-offset_bottom = 30.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_n2snw")
 
 [node name="GameOver" type="Panel" parent="."]
 visible = false
@@ -31,35 +30,72 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ho6en")
 
-[node name="MarginContainer" type="MarginContainer" parent="GameOver"]
+[node name="VBoxContainer" type="VBoxContainer" parent="GameOver"]
 layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
+anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = 499.0
-offset_top = -44.0
-offset_right = -499.0
-offset_bottom = 44.0
+anchor_bottom = 1.0
+offset_left = 512.0
+offset_top = 285.0
+offset_right = -512.0
+offset_bottom = -285.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 15
-theme_override_constants/margin_right = 15
-theme_override_constants/margin_bottom = 15
-
-[node name="VBoxContainer" type="VBoxContainer" parent="GameOver/MarginContainer"]
-layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="Label" type="Label" parent="GameOver/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="GameOver/VBoxContainer"]
 layout_mode = 2
 text = "You are dead!"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RespawnButton" type="Button" parent="GameOver/MarginContainer/VBoxContainer"]
+[node name="RespawnButton" type="Button" parent="GameOver/VBoxContainer"]
 layout_mode = 2
 text = "Respawn"
 
-[connection signal="pressed" from="GameOver/MarginContainer/VBoxContainer/RespawnButton" to="." method="_on_respawn_button_pressed"]
+[node name="KDPanel" type="Panel" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -83.0
+offset_top = 16.0
+offset_right = -15.0
+offset_bottom = 49.0
+grow_horizontal = 0
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_n2snw")
+
+[node name="Label" type="Label" parent="KDPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -16.5
+offset_top = -11.5
+offset_right = 16.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Health bar" type="ProgressBar" parent="."]
+anchors_preset = -1
+anchor_top = 0.097
+anchor_right = 1.0
+anchor_bottom = 0.097
+offset_left = 394.0
+offset_top = -9.856
+offset_right = -394.0
+offset_bottom = 17.144
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+theme_override_styles/background = SubResource("StyleBoxFlat_ns4kc")
+theme_override_styles/fill = SubResource("StyleBoxFlat_sndvk")
+max_value = 2.0
+step = 1.0
+value = 2.0
+show_percentage = false
+
+[connection signal="pressed" from="GameOver/VBoxContainer/RespawnButton" to="." method="_on_respawn_button_pressed"]

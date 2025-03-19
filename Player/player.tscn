@@ -81,34 +81,6 @@ tracks/1/keys = {
 "values": [Vector3(0, 0, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_2hs0m"]
-resource_name = "Shoot"
-length = 0.4
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerCamera/GunSlot:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector3(0.734, -0.298285, -1.031), Vector3(0.734, -0.476, -1.031)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("PlayerCamera/GunSlot:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector3(0.248744, 0, 0), Vector3(0, 0, 0)]
-}
-
 [sub_resource type="Animation" id="Animation_btcbx"]
 resource_name = "Reload"
 length = 2.0
@@ -138,6 +110,34 @@ tracks/1/keys = {
 "values": [Vector3(0, 0, 0), Vector3(0, 0.801019, -1.01704), Vector3(0, 0.801106, -1.01753), Vector3(0, 0, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_2hs0m"]
+resource_name = "Shoot"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerCamera/GunSlot:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0.734, -0.298285, -1.031), Vector3(0.734, -0.476, -1.031)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerCamera/GunSlot:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0.248744, 0, 0), Vector3(0, 0, 0)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2hs0m"]
 _data = {
 &"Idle": SubResource("Animation_i3pqv"),
@@ -160,10 +160,14 @@ properties/2/replication_mode = 1
 properties/3/path = NodePath(".:color")
 properties/3/spawn = true
 properties/3/replication_mode = 1
+properties/4/path = NodePath("PlayerCamera/GunSlot/PaintGun:bullets_on_mag")
+properties/4/spawn = true
+properties/4/replication_mode = 1
 
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 3
 script = ExtResource("1_6n6bo")
+color = Color(0.810573, 0, 0.248173, 1)
 
 [node name="Body" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -180,6 +184,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.57023, 0.394823)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.734, -0.476, -1.031)
 
 [node name="PaintGun" parent="PlayerCamera/GunSlot" instance=ExtResource("2_au80b")]
+mag_size = 5
 
 [node name="HUD" parent="PlayerCamera" instance=ExtResource("3_ss5ws")]
 
