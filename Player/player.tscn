@@ -167,7 +167,6 @@ properties/4/replication_mode = 1
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 3
 script = ExtResource("1_6n6bo")
-color = Color(0.810573, 0, 0.248173, 1)
 
 [node name="Body" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

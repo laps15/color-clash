@@ -23,6 +23,9 @@ func _ready() -> void:
 	material.albedo_color = self.color
 	self.mesh_instance.set_surface_override_material(0, material)
 	
+	if str(multiplayer.get_unique_id()) == str(self.name):
+		self.hud.set_peer_id(multiplayer.get_unique_id())
+	
 	if not self.is_multiplayer_authority():
 		return
 
@@ -33,8 +36,9 @@ func set_color(color: Color) -> void:
 	self.color = color
 	
 func set_current_hp(current_hp: int) -> void:
-	self.current_hp = current_hp
-	self.hud.update_hp(self.current_hp, self)
+	if str(multiplayer.get_unique_id()) == str(self.name):
+		self.current_hp = current_hp
+		self.hud.update_hp(self.current_hp, self)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not self.is_multiplayer_authority():
@@ -105,23 +109,26 @@ func play_reload_effects() -> void:
 
 @rpc("any_peer", "call_local")
 func take_damage() -> void:
+	print(str("At #", multiplayer.get_unique_id(), " applying damage to ", self.name))
 	if str(multiplayer.get_unique_id()) != str(self.name):
 		return
 		
 	print(str("At #", multiplayer.get_unique_id(), " applying damage to ", self.name))
 	self.set_current_hp(self.current_hp - 1)
 	if current_hp == 0:
-		#hud.increase_death_count()
+		self.die()
 		hud.display_game_over(self)
 
 @rpc("call_local")
 func increase_kill_count() -> void:
-	print("On #", multiplayer.get_unique_id(), " increasing kill count")
+	if str(multiplayer.get_unique_id()) == str(self.name):
+		print("On #", multiplayer.get_unique_id(), " increasing kill count")
 
 func die():
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	self
-	self.remove_body.rpc()
+	if str(multiplayer.get_unique_id()) == str(self.name):
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		hud.increase_death_count()
+		self.remove_body.rpc()
 
 @rpc("call_local")
 func remove_body() -> void:

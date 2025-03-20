@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dqahacfl1sjqs"]
+[gd_scene load_steps=7 format=3 uid="uid://dqahacfl1sjqs"]
 
 [ext_resource type="Script" uid="uid://c4o0ohvx23nvw" path="res://Player/hud.gd" id="1_ns4kc"]
 
@@ -17,6 +17,13 @@ bg_color = Color(0.825622, 0, 0.127881, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sndvk"]
 bg_color = Color(0.191246, 0.519031, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m6twi"]
+bg_color = Color(0, 0, 0, 0.207843)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_ns4kc")
@@ -97,5 +104,26 @@ max_value = 2.0
 step = 1.0
 value = 2.0
 show_percentage = false
+
+[node name="Player id container" type="Panel" parent="."]
+offset_left = 18.0
+offset_top = 11.0
+offset_right = 122.0
+offset_bottom = 42.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_m6twi")
+
+[node name="Label" type="Label" parent="Player id container"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_top = -11.5
+offset_right = 0.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
 
 [connection signal="pressed" from="GameOver/VBoxContainer/RespawnButton" to="." method="_on_respawn_button_pressed"]
