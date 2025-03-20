@@ -70,9 +70,9 @@ func upnp_setup():
 	assert(discover_result == UPNP.UPNP_RESULT_SUCCESS, \
 		"UPNP discover failed! Reason: %s" % discover_result)
 		
-	#var gtw = upnp.get_gateway().is_valid_gateway()
-	#assert(upnp.get_gateway() and upnp.get_gateway().is_valid_gateway(), \
-		#"UPNP Invalid Gateway!")
+	var gtw = upnp.get_gateway().is_valid_gateway()
+	assert(upnp.get_gateway() and upnp.get_gateway().is_valid_gateway(), \
+		"UPNP Invalid Gateway!")
 		
 	map_result = upnp.add_port_mapping(PORT)
 	assert(map_result == UPNP.UPNP_RESULT_SUCCESS, \
@@ -84,9 +84,10 @@ func handle_player_hit(hitter: String, hittee: String) -> void:
 	if not self.is_multiplayer_authority():
 		return
 
-	var hitter_player = self.get_node(str(hitter)) as Player
-	var hittee_player = self.get_node(str(hittee)) as Player
+	var attacker = self.get_node(str(hitter)) as Player
+	var target = self.get_node(str(hittee)) as Player
 	
 	print(str("At #", multiplayer.get_unique_id(), " #", str(hitter).to_int(), " hitted #", str(hittee).to_int()))
-	hittee_player.take_damage.rpc_id(str(hittee).to_int())
-	#hitter_player.increase_kill_count.rpc()
+	target.take_damage.rpc(target.get_path(), attacker.get_path())
+	
+	

@@ -163,6 +163,9 @@ properties/3/replication_mode = 1
 properties/4/path = NodePath("PlayerCamera/GunSlot/PaintGun:bullets_on_mag")
 properties/4/spawn = true
 properties/4/replication_mode = 1
+properties/5/path = NodePath(".:current_hp")
+properties/5/spawn = true
+properties/5/replication_mode = 1
 
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 3
@@ -183,6 +186,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.57023, 0.394823)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.734, -0.476, -1.031)
 
 [node name="PaintGun" parent="PlayerCamera/GunSlot" instance=ExtResource("2_au80b")]
+transform = Transform3D(0.999322, 0.000771061, 0.03681, 0.00110317, 0.998705, -0.0508689, -0.0368016, 0.0508751, 0.998027, 0, 0, 0)
 mag_size = 5
 
 [node name="HUD" parent="PlayerCamera" instance=ExtResource("3_ss5ws")]

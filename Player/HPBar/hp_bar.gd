@@ -1,0 +1,41 @@
+extends Panel
+
+@export var max_value: int = 0
+@export var current_value: int = 0
+@export var HeartPointScene: PackedScene = preload("res://Player/HPBar/hp_point.tscn")
+
+@onready var hbox_container = $HBoxContainer
+
+var hp_points = []
+
+func _enter_tree() -> void:
+	if not self.is_multiplayer_authority():
+		return
+
+	print(str("Entering tree at #", multiplayer.get_unique_id(), ": current hp : ", self.current_value))
+	for i in range(max_value):
+		var hp_point = HeartPointScene.instantiate()
+		self.hp_points.append(hp_point)
+
+func _ready() -> void:
+	if not self.is_multiplayer_authority():
+		return
+
+	print(str("Ready tree at #", multiplayer.get_unique_id(), ": current hp : ", self.current_value))
+	for idx in range(max_value):
+		if idx < current_value :
+			self.hp_points[idx].increase()
+		else:
+			self.hp_points[idx].decrease()
+		self.hbox_container.add_child(self.hp_points[idx])
+
+
+func set_value(value: int) -> void:
+	self.current_value = value
+	for idx in range(max_value):
+		if idx < current_value:
+			self.hp_points[idx].increase()
+		else:
+			self.hp_points[idx].decrease()
+		self.hbox_container.add_child(self.hp_points[idx])
+	

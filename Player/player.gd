@@ -16,15 +16,12 @@ const SPEED = 10.0
 const JUMP_VELOCITY = 7.5
 
 func _enter_tree() -> void:
-	self.set_multiplayer_authority(str(self.name).to_int())
+	self.set_multiplayer_authority(str(self.name).to_int(), true)
 
 func _ready() -> void:
 	var material = StandardMaterial3D.new()
 	material.albedo_color = self.color
 	self.mesh_instance.set_surface_override_material(0, material)
-	
-	if str(multiplayer.get_unique_id()) == str(self.name):
-		self.hud.set_peer_id(multiplayer.get_unique_id())
 	
 	if not self.is_multiplayer_authority():
 		return
@@ -34,11 +31,11 @@ func _ready() -> void:
 	
 func set_color(color: Color) -> void:
 	self.color = color
-	
+
+@rpc("call_local")
 func set_current_hp(current_hp: int) -> void:
-	if str(multiplayer.get_unique_id()) == str(self.name):
-		self.current_hp = current_hp
-		self.hud.update_hp(self.current_hp, self)
+	self.current_hp = current_hp
+	self.hud.update_hp.rpc(self.current_hp)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not self.is_multiplayer_authority():
@@ -95,7 +92,6 @@ func is_reloading():
 @rpc("call_local")
 func play_shoot_effects() -> void:
 	if paint_gun.can_shoot():
-		#print(str("At #", multiplayer.get_unique_id(), "Shooting.."))
 		anim_player.stop()
 		anim_player.play("Shoot")
 		
@@ -108,26 +104,27 @@ func play_reload_effects() -> void:
 	anim_player.play("Reload")
 
 @rpc("any_peer", "call_local")
-func take_damage() -> void:
-	print(str("At #", multiplayer.get_unique_id(), " applying damage to ", self.name))
-	if str(multiplayer.get_unique_id()) != str(self.name):
+func take_damage(target_path: NodePath, attacker_path: NodePath) -> void:
+	if target_path != self.get_path():
 		return
-		
-	print(str("At #", multiplayer.get_unique_id(), " applying damage to ", self.name))
-	self.set_current_hp(self.current_hp - 1)
+
+	self.set_current_hp.rpc(self.current_hp - 1)
 	if current_hp == 0:
+		if self.is_multiplayer_authority():
+			self.get_node(attacker_path).increase_kill_count.rpc()
+			hud.increase_death_count()
 		self.die()
 		hud.display_game_over(self)
 
-@rpc("call_local")
+@rpc("any_peer", "call_local")
 func increase_kill_count() -> void:
-	if str(multiplayer.get_unique_id()) == str(self.name):
-		print("On #", multiplayer.get_unique_id(), " increasing kill count")
+	if self.is_multiplayer_authority():
+		hud.increase_kill_count()
 
 func die():
-	if str(multiplayer.get_unique_id()) == str(self.name):
+	print("On #", multiplayer.get_unique_id(), " die")
+	if self.is_multiplayer_authority():
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		hud.increase_death_count()
 		self.remove_body.rpc()
 
 @rpc("call_local")

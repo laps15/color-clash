@@ -1,6 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://dqahacfl1sjqs"]
 
 [ext_resource type="Script" uid="uid://c4o0ohvx23nvw" path="res://Player/hud.gd" id="1_ns4kc"]
+[ext_resource type="Script" uid="uid://cqmmes0trenea" path="res://Player/HPBar/hp_bar.gd" id="2_m6twi"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ho6en"]
 bg_color = Color(1, 0.054902, 0.054902, 0.188235)
@@ -12,18 +13,19 @@ corner_radius_top_right = 15
 corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ns4kc"]
-bg_color = Color(0.825622, 0, 0.127881, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sndvk"]
-bg_color = Color(0.191246, 0.519031, 0, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m6twi"]
 bg_color = Color(0, 0, 0, 0.207843)
 corner_radius_top_left = 15
 corner_radius_top_right = 15
 corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sndvk"]
+bg_color = Color(0.443137, 1, 0, 1)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_ns4kc")
@@ -86,24 +88,68 @@ offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Health bar" type="ProgressBar" parent="."]
-anchors_preset = -1
-anchor_top = 0.097
-anchor_right = 1.0
-anchor_bottom = 0.097
-offset_left = 394.0
-offset_top = -9.856
-offset_right = -394.0
-offset_bottom = 17.144
+[node name="PlayerIdContainer" type="Panel" parent="."]
+offset_left = 18.0
+offset_top = 11.0
+offset_right = 122.0
+offset_bottom = 42.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_m6twi")
+
+[node name="Label" type="Label" parent="PlayerIdContainer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_top = -11.5
+offset_right = 0.5
+offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_vertical = 4
-theme_override_styles/background = SubResource("StyleBoxFlat_ns4kc")
-theme_override_styles/fill = SubResource("StyleBoxFlat_sndvk")
-max_value = 2.0
-step = 1.0
-value = 2.0
-show_percentage = false
+
+[node name="Poger?" type="Panel" parent="."]
+anchors_preset = -1
+anchor_left = 0.512157
+anchor_top = 0.515679
+anchor_right = 0.512819
+anchor_bottom = 0.526528
+offset_left = 0.00500488
+offset_right = 4.24304
+offset_bottom = -2.02988
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 0.677425
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_sndvk")
+metadata/_edit_use_anchors_ = true
+
+[node name="HPBar" type="Panel" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -26.0
+offset_top = 20.0
+offset_right = 26.0
+offset_bottom = 37.0
+grow_horizontal = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_n2snw")
+script = ExtResource("2_m6twi")
+max_value = 2
+current_value = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HPBar"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 5
 
 [node name="Player id container" type="Panel" parent="."]
 offset_left = 18.0
