@@ -4,9 +4,10 @@ extends Node3D
 
 var rng = RandomNumberGenerator.new()
 
-func shoot(color: Color) -> void:
+func shoot(color: Color, peer_id: String) -> void:
 	var p = paint_scene.instantiate() as PaintBlob
 	p.color = color
+	p.set_peer_id(peer_id)
 	self.add_child(p)
 	p.global_position = self.global_position
 	p.global_rotation = self.global_rotation

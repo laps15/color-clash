@@ -6,6 +6,9 @@ var mesh_viewport_map = {}
 var child_meshes = {}
 
 func _ready():
+	if not self.is_multiplayer_authority():
+		return
+
 	for child in self.find_children("*", "MeshInstance3D", true):
 		var child_mesh = (child as MeshInstance3D)
 		var mesh_texture = (child_mesh.mesh.surface_get_material(0) as ShaderMaterial).get_shader_parameter("Texture") as CompressedTexture2D
@@ -28,9 +31,11 @@ func _ready():
 	print(str("We currently have ", len(mesh_viewport_map), " viewports instantiated"))
 	for mesh_unique_id in mesh_viewport_map:
 		print(str("Viewport #", mesh_unique_id, " size: (", mesh_viewport_map[mesh_unique_id].size[0], ", ", mesh_viewport_map[mesh_unique_id].size[1], ")"))
+		
+	ProcessProjectileCollisions.connect("map_hit", self.paint.rpc)
 
+@rpc("call_local")
 func paint(mesh_unique_id: int, pos: Vector2, color: Color = Color.RED):
-	print(str("Painting at ", mesh_unique_id, "(", pos[0], ", ", pos[1], ")"))
 	var viewport_size = mesh_viewport_map[mesh_unique_id].size
 	var converted_pos = Vector2(pos[0] * viewport_size[0], pos[1] * viewport_size[1])
 	mesh_viewport_map[mesh_unique_id].paint(converted_pos, color)
