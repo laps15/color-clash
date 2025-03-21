@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://c00d7kk20mfua"]
+[gd_scene load_steps=7 format=3 uid="uid://c00d7kk20mfua"]
 
 [ext_resource type="Script" uid="uid://duht4jmjw804g" path="res://main.gd" id="1_lquwl"]
 [ext_resource type="PackedScene" uid="uid://bvif48oswsufx" path="res://Levels/simple_level.tscn" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://d14oyr8if81g0" path="res://Draw/draw_viewport.tscn" id="3_h2yge"]
 [ext_resource type="PackedScene" uid="uid://dnc71ejfltahy" path="res://Maps/simple_level.tscn" id="4_lquwl"]
+[ext_resource type="Script" uid="uid://vgjhtqi4cur0" path="res://multiplayer_spawner.gd" id="5_lquwl"]
+[ext_resource type="PackedScene" uid="uid://deudk8msb5gpw" path="res://Player/player.tscn" id="6_7mycd"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_lquwl")
@@ -63,6 +65,8 @@ transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://deudk8msb5gpw")
 spawn_path = NodePath("..")
+script = ExtResource("5_lquwl")
+SpawnScene = ExtResource("6_7mycd")
 
 [connection signal="pressed" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]

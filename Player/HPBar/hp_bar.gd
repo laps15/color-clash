@@ -12,7 +12,6 @@ func _enter_tree() -> void:
 	if not self.is_multiplayer_authority():
 		return
 
-	print(str("Entering tree at #", multiplayer.get_unique_id(), ": current hp : ", self.current_value))
 	for i in range(max_value):
 		var hp_point = HeartPointScene.instantiate()
 		self.hp_points.append(hp_point)
@@ -21,7 +20,6 @@ func _ready() -> void:
 	if not self.is_multiplayer_authority():
 		return
 
-	print(str("Ready tree at #", multiplayer.get_unique_id(), ": current hp : ", self.current_value))
 	for idx in range(max_value):
 		if idx < current_value :
 			self.hp_points[idx].increase()

@@ -4,6 +4,7 @@ extends Node
 
 @onready var main_menu = $CanvasLayer/MainMenu
 @onready var adress_entry = $CanvasLayer/MainMenu/MarginContainer/VBoxContainer/AddressEntry
+@onready var spawner = $MultiplayerSpawner
 
 var level
 var player_colors = [
@@ -49,11 +50,16 @@ func _on_join_button_pressed() -> void:
 	multiplayer.multiplayer_peer = enet_peer
 
 func add_player(peer_id):
-	var player = PlayerScene.instantiate()
-	player.name = str(peer_id)
-	player.set_color(player_colors.pop_front())
+	var initial_pos = Vector3(randf_range(-10,10), 0, randf_range(-10, 10))
+	var color = player_colors.pop_front()
+	
+	var player = self.spawner.spawn({
+		'peer_id': peer_id,
+		'color': color,
+		'initial_pos': initial_pos
+	})
+	
 	self.add_child(player)
-	player.global_position = Vector3(randf_range(-10,10), 0, randf_range(-10, 10))
 	print(str("Player #", peer_id, " spawned."))
 	
 func remove_player(peer_id):

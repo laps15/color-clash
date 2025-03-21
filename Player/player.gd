@@ -16,19 +16,21 @@ const SPEED = 10.0
 const JUMP_VELOCITY = 7.5
 
 func _enter_tree() -> void:
+	print(str("Entering tree at #", multiplayer.get_unique_id(), " MPA: ", self.name, ", color: ", self.color))
 	self.set_multiplayer_authority(str(self.name).to_int(), true)
 
 func _ready() -> void:
 	var material = StandardMaterial3D.new()
 	material.albedo_color = self.color
 	self.mesh_instance.set_surface_override_material(0, material)
+	print(str("Ready at #", self.name, " MPA: ", self.get_multiplayer_authority(), ", color: ", self.color))
 	
 	if not self.is_multiplayer_authority():
 		return
 
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	camera.current = true
-	
+
 func set_color(color: Color) -> void:
 	self.color = color
 
