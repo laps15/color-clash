@@ -22,6 +22,7 @@ var _local_face_vertices_dict = {}
 
 func set_meshes(_meshes_dict):
 	for id in _meshes_dict:
+		print(str("UVPosition: Received mesh with id: ", id))
 		mesh_instance_dict[id] = _meshes_dict[id]
 		mesh_dict[id] = _meshes_dict[id].mesh
 		meshtool_dict[id] = MeshDataTool.new()
@@ -101,7 +102,8 @@ func get_uv_coords(mesh_unique_id: int, point, normal, transform = true):
 	var uv2 = meshtool_dict[mesh_unique_id].get_vertex_uv(_local_face_vertices_dict[mesh_unique_id][face[0]][1])
 	var uv3 = meshtool_dict[mesh_unique_id].get_vertex_uv(_local_face_vertices_dict[mesh_unique_id][face[0]][2])
   
-	return (uv1 * bc.x) + (uv2 * bc.y) + (uv3 * bc.z)  
+	var p = (uv1 * bc.x) + (uv2 * bc.y) + (uv3 * bc.z)
+	return Vector2(abs(p[0]), abs(p[1]))
 
 func equals_with_epsilon(v1: Vector3, v2: Vector3, epsilon):
 	if (v1.distance_to(v2) < epsilon):

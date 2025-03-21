@@ -9,6 +9,7 @@ func _ready():
 	if not self.is_multiplayer_authority():
 		return
 
+	var first_mesh_id = null
 	for child in self.find_children("*", "MeshInstance3D", true):
 		var child_mesh = (child as MeshInstance3D)
 		var mesh_texture = (child_mesh.mesh.surface_get_material(0) as ShaderMaterial).get_shader_parameter("Texture") as CompressedTexture2D
@@ -22,9 +23,11 @@ func _ready():
 		mesh_viewport_map[mesh_unique_id] = viewport
 		
 		child_meshes[mesh_unique_id] = child_mesh
+		if first_mesh_id == null: first_mesh_id = mesh_unique_id
 		self.add_child(viewport)
 
-	UVPosition.set_meshes(child_meshes)
+	#UVPosition.set_meshes(child_meshes)
+	UVPosition.set_meshes({first_mesh_id: child_meshes[first_mesh_id]})
 	for mesh_unique_id in child_meshes:
 		(child_meshes[mesh_unique_id].mesh.surface_get_material(0) as ShaderMaterial).set_shader_parameter("Paint", mesh_viewport_map[mesh_unique_id].get_texture())
 		
@@ -35,7 +38,9 @@ func _ready():
 	ProcessProjectileCollisions.connect("map_hit", self.paint.rpc)
 
 @rpc("call_local")
-func paint(mesh_unique_id: int, pos: Vector2, color: Color = Color.RED):
+func paint(mesh_path: NodePath, pos: Vector2, color: Color = Color.RED):
+	var node = self.get_node(mesh_path)
+	var mesh_unique_id = node.get_instance_id()
 	var viewport_size = mesh_viewport_map[mesh_unique_id].size
 	var converted_pos = Vector2(pos[0] * viewport_size[0], pos[1] * viewport_size[1])
 	mesh_viewport_map[mesh_unique_id].paint(converted_pos, color)

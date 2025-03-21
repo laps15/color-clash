@@ -110,6 +110,8 @@ func get_color_speed_modifier() -> float:
 			continue
 		
 		var uv = UVPosition.get_uv_coords(collision_target.get_instance_id(), collision.get_position(), collision.get_normal(), true)
+		if uv == null:
+			continue
 		var color = level_map.get_color_at_pos(collision_target.get_instance_id(), uv)
 		if color == self.color:
 			return 1.5
