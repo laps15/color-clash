@@ -5,6 +5,7 @@ class_name Player
 @onready var anim_player = $AnimationPlayer
 @onready var paint_gun = $PlayerCamera/GunSlot/PaintGun
 @onready var mesh_instance: MeshInstance3D = $Body
+@onready var hit_box: CollisionShape3D = $CollisionShape3D
 @onready var hud = $PlayerCamera/HUD
 @onready var level_map = $/root/Main/Level
 
@@ -12,6 +13,9 @@ class_name Player
 
 # Player stats
 @export var current_hp = 2
+
+var started_fall = null
+var move_speed_modifier = 1.
 
 const SPEED = 10.0
 const JUMP_VELOCITY = 7.5
@@ -64,13 +68,22 @@ func _physics_process(delta: float) -> void:
 
 	# Add the gravity.
 	if not is_on_floor():
+		if not started_fall:
+			started_fall = Time.get_ticks_msec()
+		elif Time.get_ticks_msec() - self.started_fall > 3500:
+			self.die()
+			return
+
 		velocity += get_gravity() * delta
+	else:
+		started_fall = null
 
 	# Handle jump.
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 
-	var move_speed_modifier = self.get_color_speed_modifier()
+	if is_on_floor():
+		move_speed_modifier = self.get_color_speed_modifier()
 
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
@@ -131,6 +144,7 @@ func take_damage(target_path: NodePath, attacker_path: NodePath) -> void:
 
 	self.set_current_hp.rpc(self.current_hp - 1)
 	if current_hp == 0:
+		self.die(attacker_path)
 		if self.is_multiplayer_authority():
 			self.get_node(attacker_path).increase_kill_count.rpc()
 			hud.increase_death_count()
@@ -142,25 +156,35 @@ func increase_kill_count() -> void:
 	if self.is_multiplayer_authority():
 		hud.increase_kill_count()
 
-func die():
+func die(attacker_path: NodePath = ""):
+	if not self.is_multiplayer_authority():
+		return
+
+	self.set_current_hp(0)
 	print("On #", multiplayer.get_unique_id(), " die")
-	if self.is_multiplayer_authority():
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		self.remove_body.rpc()
+	hud.increase_death_count()
+	if attacker_path != NodePath(""):
+		self.get_node(attacker_path).increase_kill_count.rpc()
+	hud.display_game_over(self)
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	self.remove_body.rpc()
 
 @rpc("call_local")
 func remove_body() -> void:
+	self.hit_box.disabled = true
 	self.hide()
 
 func respawn() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	self.paint_gun.reload()
 	self.set_current_hp(2)
+	started_fall = null
 	self.global_position = Vector3(randf_range(-10,10), 0, randf_range(-10, 10))
 	self.reveal_body.rpc()
 
 @rpc("call_local")
 func reveal_body() -> void:
+	self.hit_box.disabled = false
 	self.show()
 
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:

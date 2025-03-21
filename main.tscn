@@ -60,7 +60,10 @@ alignment = 1
 transform = Transform3D(-0.726575, 0.607224, -0.321509, 0, 0.46793, 0.883766, 0.687088, 0.642122, -0.339986, 294.031, 236.146, 98.5634)
 
 [node name="Level" parent="." instance=ExtResource("4_lquwl")]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+transform = Transform3D(0.4, 0, 0, 0, 0.2, 0, 0, 0, 0.4, 0, 0, 0)
+
+[node name="map" parent="Level/simple_map" index="0"]
+layers = 31
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://deudk8msb5gpw")
