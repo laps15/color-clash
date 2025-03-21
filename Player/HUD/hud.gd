@@ -3,6 +3,7 @@ extends CanvasLayer
 @onready var game_over_overlay = $GameOver
 @onready var kd_pannel = $KDPanel/Label
 @onready var hp_bar = $HPBar
+@onready var cross_hair = $CrossHair
 @onready var player_name_label = $PlayerIdContainer/Label
 
 var player_ref: Player = null
@@ -13,6 +14,7 @@ func _ready():
 	if not self.is_multiplayer_authority():
 		return
 
+	self.game_over_overlay.hide()
 	self.update_kd_display()
 	self.set_player_name()
 
@@ -21,7 +23,8 @@ func display_game_over(player: Player) -> void:
 		return
 
 	player_ref = player
-	game_over_overlay.show()
+	cross_hair.hide()
+	game_over_overlay.reveal()
 
 func update_kd_display() -> void:
 	if not self.is_multiplayer_authority():
@@ -58,5 +61,6 @@ func increase_death_count() -> void:
 
 func _on_respawn_button_pressed() -> void:
 	game_over_overlay.hide()
+	cross_hair.show()
 	player_ref.respawn()
 	player_ref = null

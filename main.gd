@@ -43,8 +43,14 @@ func _on_host_button_pressed() -> void:
 func _on_join_button_pressed() -> void:
 	main_menu.hide()
 	var addr = adress_entry.text
+	var port = PORT
 	
-	print(str("Connecting to ", addr, ":", PORT))
+	var tks = addr.split(":")
+	if len(tks) == 2:
+		addr = tks[0]
+		port = tks[1]
+	
+	print(str("Connecting to ", addr, ":", port))
 	
 	enet_peer.create_client(addr, PORT)
 	multiplayer.multiplayer_peer = enet_peer

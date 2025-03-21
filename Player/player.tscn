@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cex71hdxo18du" path="res://Player/player.gd" id="1_6n6bo"]
 [ext_resource type="PackedScene" uid="uid://o3tu62qtwmmy" path="res://Gun/paint_gun.tscn" id="2_au80b"]
-[ext_resource type="PackedScene" uid="uid://dqahacfl1sjqs" path="res://Player/hud.tscn" id="3_ss5ws"]
+[ext_resource type="PackedScene" uid="uid://dqahacfl1sjqs" path="res://Player/HUD/hud.tscn" id="3_ss5ws"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_4flbx"]
 
@@ -112,7 +112,8 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_2hs0m"]
 resource_name = "Shoot"
-length = 0.4
+length = 0.2
+step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -120,7 +121,7 @@ tracks/0/path = NodePath("PlayerCamera/GunSlot:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4),
+"times": PackedFloat32Array(0, 0.2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector3(0.734, -0.298285, -1.031), Vector3(0.734, -0.476, -1.031)]
@@ -132,7 +133,7 @@ tracks/1/path = NodePath("PlayerCamera/GunSlot:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.4),
+"times": PackedFloat32Array(0, 0.2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector3(0.248744, 0, 0), Vector3(0, 0, 0)]
@@ -187,7 +188,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.734, -0.476, -1.031)
 
 [node name="PaintGun" parent="PlayerCamera/GunSlot" instance=ExtResource("2_au80b")]
 transform = Transform3D(0.999322, 0.000771061, 0.03681, 0.00110317, 0.998705, -0.0508689, -0.0368016, 0.0508751, 0.998027, 0, 0, 0)
-mag_size = 5
+bullets_on_mag = 30
 
 [node name="HUD" parent="PlayerCamera" instance=ExtResource("3_ss5ws")]
 

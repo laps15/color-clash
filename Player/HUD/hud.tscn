@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://dqahacfl1sjqs"]
+[gd_scene load_steps=8 format=3 uid="uid://dqahacfl1sjqs"]
 
-[ext_resource type="Script" uid="uid://c4o0ohvx23nvw" path="res://Player/hud.gd" id="1_ns4kc"]
-[ext_resource type="Script" uid="uid://cqmmes0trenea" path="res://Player/HPBar/hp_bar.gd" id="2_m6twi"]
+[ext_resource type="Script" uid="uid://c4o0ohvx23nvw" path="res://Player/HUD/hud.gd" id="1_ns4kc"]
+[ext_resource type="Script" uid="uid://c0t8mmk000jvp" path="res://Player/HUD/game_over.gd" id="2_xtdgy"]
+[ext_resource type="PackedScene" uid="uid://btit410ye3d5o" path="res://Player/HPBar/hp_bar.tscn" id="4_1aaf1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ho6en"]
 bg_color = Color(1, 0.054902, 0.054902, 0.188235)
@@ -38,6 +39,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ho6en")
+script = ExtResource("2_xtdgy")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="GameOver"]
 layout_mode = 1
@@ -59,8 +61,16 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="RespawnButton" type="Button" parent="GameOver/VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "Respawn"
+
+[node name="Countdown" type="Label" parent="GameOver/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Timer" type="Timer" parent="GameOver"]
+one_shot = true
 
 [node name="KDPanel" type="Panel" parent="."]
 anchors_preset = 1
@@ -109,7 +119,7 @@ offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Poger?" type="Panel" parent="."]
+[node name="CrossHair" type="Panel" parent="."]
 anchors_preset = -1
 anchor_left = 0.512157
 anchor_top = 0.515679
@@ -125,51 +135,16 @@ size_flags_horizontal = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_sndvk")
 metadata/_edit_use_anchors_ = true
 
-[node name="HPBar" type="Panel" parent="."]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -26.0
-offset_top = 20.0
-offset_right = 26.0
-offset_bottom = 37.0
-grow_horizontal = 2
-size_flags_horizontal = 8
-theme_override_styles/panel = SubResource("StyleBoxFlat_n2snw")
-script = ExtResource("2_m6twi")
-max_value = 2
-current_value = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HPBar"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 5
-
-[node name="Player id container" type="Panel" parent="."]
-offset_left = 18.0
-offset_top = 11.0
-offset_right = 122.0
-offset_bottom = 42.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_m6twi")
-
-[node name="Label" type="Label" parent="Player id container"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -0.5
-offset_top = -11.5
-offset_right = 0.5
-offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
+[node name="HPBar" parent="." instance=ExtResource("4_1aaf1")]
+anchors_preset = -1
+anchor_left = 0.462674
+anchor_top = 0.0154321
+anchor_right = 0.493924
+anchor_bottom = 0.0354938
+offset_left = -6.10352e-05
+offset_top = 7.62939e-06
+offset_right = -6.10352e-05
+offset_bottom = 5.72205e-06
 
 [connection signal="pressed" from="GameOver/VBoxContainer/RespawnButton" to="." method="_on_respawn_button_pressed"]
+[connection signal="timeout" from="GameOver/Timer" to="GameOver" method="_on_timer_timeout"]
