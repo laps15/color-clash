@@ -6,6 +6,7 @@ class_name Player
 @onready var paint_gun = $PlayerCamera/GunSlot/PaintGun
 @onready var mesh_instance: MeshInstance3D = $Body
 @onready var hud = $PlayerCamera/HUD
+@onready var level_map = $/root/Main/Level
 
 @export var color: Color
 
@@ -65,26 +66,43 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
-
 	# Handle jump.
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
+
+	var move_speed_modifier = self.get_color_speed_modifier()
 
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
 	var input_dir := Input.get_vector("left", "right", "up", "down")
 	var direction := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	if direction:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
+		velocity.x = direction.x * SPEED * move_speed_modifier 
+		velocity.z = direction.z * SPEED * move_speed_modifier
 	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-		velocity.z = move_toward(velocity.z, 0, SPEED)
+		velocity.x = move_toward(velocity.x, 0, SPEED * move_speed_modifier)
+		velocity.z = move_toward(velocity.z, 0, SPEED * move_speed_modifier)
 
 	if not self.is_shooting() and not self.is_reloading():
 		anim_player.play( "Move" if input_dir != Vector2.ZERO and self.is_on_floor() else "Idle")
 
 	move_and_slide()
+
+func get_color_speed_modifier() -> float:
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+
+		var collision_target = collision.get_collider()
+		if collision_target is CharacterBody3D or collision.get_normal() != Vector3.UP:
+			continue
+		
+		var uv = UVPosition.get_uv_coords(collision_target.get_instance_id(), collision.get_position(), collision.get_normal(), true)
+		var color = level_map.get_color_at_pos(collision_target.get_instance_id(), uv)
+		if color == self.color:
+			return 1.5
+		elif color != Color.TRANSPARENT:
+			return 0.5
+	return 1
 
 func is_shooting():
 	return anim_player.current_animation == "Shoot"
