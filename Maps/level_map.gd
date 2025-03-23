@@ -39,3 +39,12 @@ func paint(mesh_unique_id: int, pos: Vector2, color: Color = Color.RED):
 	var viewport_size = mesh_viewport_map[mesh_unique_id].size
 	var converted_pos = Vector2(pos[0] * viewport_size[0], pos[1] * viewport_size[1])
 	mesh_viewport_map[mesh_unique_id].paint(converted_pos, color)
+
+
+func get_color_at_pos(mesh_unique_id: int, pos: Vector2) -> Color:
+	var viewPort = mesh_viewport_map[mesh_unique_id] as SubViewport
+	var color = viewPort.get_texture().get_image().get_pixel(pos[0] * viewPort.size[0], pos[1] * viewPort.size[1])
+	if color == Color(0,0,0,0):
+		return Color.TRANSPARENT
+	
+	return color

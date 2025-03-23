@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://jjjase2b1cse"]
 
 [ext_resource type="Script" uid="uid://cex71hdxo18du" path="res://Player/player.gd" id="1_td1jw"]
-[ext_resource type="PackedScene" uid="uid://dqahacfl1sjqs" path="res://Player/hud.tscn" id="2_tatr3"]
+[ext_resource type="PackedScene" uid="uid://dqahacfl1sjqs" path="res://Player/HUD/hud.tscn" id="2_tatr3"]
 [ext_resource type="PackedScene" uid="uid://o3tu62qtwmmy" path="res://Gun/paint_gun.tscn" id="3_yohov"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_4flbx"]

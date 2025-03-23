@@ -1,0 +1,36 @@
+[gd_scene load_steps=3 format=3 uid="uid://btit410ye3d5o"]
+
+[ext_resource type="Script" uid="uid://cqmmes0trenea" path="res://Player/HPBar/hp_bar.gd" id="1_ntvna"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ntvna"]
+bg_color = Color(0, 0, 0, 0.164706)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[node name="HPBar" type="Panel"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -26.0
+offset_top = 20.0
+offset_right = 26.0
+offset_bottom = 37.0
+grow_horizontal = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_ntvna")
+script = ExtResource("1_ntvna")
+max_value = 2
+current_value = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 5
