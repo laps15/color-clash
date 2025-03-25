@@ -11,8 +11,10 @@ func _ready() -> void:
 		return
 
 func reveal() -> void:
+	self.respawn_button.hide()
 	self.show()
 	self.timer.start(respawn_delay)
+	self.countdown.show()
 
 func _process(delta: float) -> void:
 	if not self.is_multiplayer_authority():
@@ -21,6 +23,5 @@ func _process(delta: float) -> void:
 	self.countdown.text = "%.2fs" % self.timer.time_left
 
 func _on_timer_timeout() -> void:
-	self.timer.stop()
 	self.countdown.hide()
 	self.respawn_button.show()

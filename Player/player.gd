@@ -16,19 +16,18 @@ class_name Player
 
 var started_fall = null
 var move_speed_modifier = 1.
+var movement_disabled = false
 
 const SPEED = 10.0
 const JUMP_VELOCITY = 7.5
 
 func _enter_tree() -> void:
-	print(str("Entering tree at #", multiplayer.get_unique_id(), " MPA: ", self.name, ", color: ", self.color))
 	self.set_multiplayer_authority(str(self.name).to_int(), true)
 
 func _ready() -> void:
 	var material = StandardMaterial3D.new()
 	material.albedo_color = self.color
 	self.mesh_instance.set_surface_override_material(0, material)
-	print(str("Ready at #", self.name, " MPA: ", self.get_multiplayer_authority(), ", color: ", self.color))
 	
 	if not self.is_multiplayer_authority():
 		return
@@ -67,7 +66,7 @@ func _physics_process(delta: float) -> void:
 		return
 
 	# Add the gravity.
-	if not is_on_floor():
+	if not self.movement_disabled and not self.is_on_floor():
 		if not started_fall:
 			started_fall = Time.get_ticks_msec()
 		elif Time.get_ticks_msec() - self.started_fall > 3500:
@@ -77,6 +76,9 @@ func _physics_process(delta: float) -> void:
 		velocity += get_gravity() * delta
 	else:
 		started_fall = null
+
+	if movement_disabled:
+		return
 
 	# Handle jump.
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
@@ -121,7 +123,7 @@ func get_color_speed_modifier() -> float:
 
 func is_shooting():
 	return anim_player.current_animation == "Shoot"
-	
+
 func is_reloading():
 	return anim_player.current_animation == "Reload"
 
@@ -130,7 +132,6 @@ func play_shoot_effects() -> void:
 	if paint_gun.can_shoot():
 		anim_player.stop()
 		anim_player.play("Shoot")
-		
 		paint_gun.shoot(str(self.name), self.color)
 
 @rpc("call_local")
@@ -162,6 +163,7 @@ func die(attacker_path: NodePath = ""):
 	if not self.is_multiplayer_authority():
 		return
 
+	self.movement_disabled = true
 	self.set_current_hp(0)
 	print("On #", multiplayer.get_unique_id(), " die")
 	hud.increase_death_count()
@@ -183,6 +185,7 @@ func respawn() -> void:
 	started_fall = null
 	self.global_position = Vector3(randf_range(-10,10), 0, randf_range(-10, 10))
 	self.reveal_body.rpc()
+	self.movement_disabled = false
 
 @rpc("call_local")
 func reveal_body() -> void:
