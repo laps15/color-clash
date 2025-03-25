@@ -21,5 +21,6 @@ func _process(delta: float) -> void:
 	self.countdown.text = "%.2fs" % self.timer.time_left
 
 func _on_timer_timeout() -> void:
+	self.timer.stop()
 	self.countdown.hide()
 	self.respawn_button.show()

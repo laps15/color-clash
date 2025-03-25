@@ -12,6 +12,9 @@ var player_colors = [
 	Color.REBECCA_PURPLE,
 	Color.BLUE,
 	Color.CORAL,
+	Color.AQUAMARINE,
+	Color.CHARTREUSE,
+	Color.DARK_MAGENTA,
 ]
 
 const PlayerScene = preload("res://Player/player.tscn")

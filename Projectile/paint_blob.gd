@@ -10,11 +10,13 @@ class_name PaintBlob
 @export var peer_id: String
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+var spawned_at = null
 
 func _ready() -> void:
 	var material = StandardMaterial3D.new()
 	material.albedo_color = color
 	self.mesh_instance.set_surface_override_material(0, material)
+	self.spawned_at = Time.get_ticks_msec()
 
 func set_start_velocity():
 	self.velocity = (global_transform.basis * Vector3.FORWARD).normalized() * self.speed;
@@ -23,6 +25,9 @@ func set_peer_id(peer_id: String) -> void:
 	self.peer_id = str(peer_id)
 	
 func _physics_process(delta: float) -> void:
+	if Time.get_ticks_msec() - self.spawned_at > 5000:
+		self.queue_free()
+
 	self.velocity.y -= gravity * delta
 	self.look_at(self.position + self.velocity)
 

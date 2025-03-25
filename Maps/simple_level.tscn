@@ -42,7 +42,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_urhsw")
 
-[node name="SimpleLevel" type="Node3D"]
+[node name="Level" type="Node3D"]
 script = ExtResource("2_fic81")
 
 [node name="simple_map" parent="." instance=ExtResource("1_eu811")]
