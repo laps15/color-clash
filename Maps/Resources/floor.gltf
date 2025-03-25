@@ -15,17 +15,7 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"bridge-col",
-			"scale":[
-				50,
-				1,
-				12.5
-			],
-			"translation":[
-				0,
-				24,
-				0
-			]
+			"name":"floor-col"
 		}
 	],
 	"materials":[
@@ -43,7 +33,7 @@
 	],
 	"meshes":[
 		{
-			"name":"Cube.004",
+			"name":"Plane",
 			"primitives":[
 				{
 					"attributes":{
@@ -66,69 +56,69 @@
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"Untitled",
-			"uri":"Untitled.png"
+			"name":"floor_texture",
+			"uri":"floor_texture.png"
 		}
 	],
 	"accessors":[
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":64,
+			"count":4,
 			"max":[
-				2,
-				1,
-				2
+				50,
+				0,
+				50
 			],
 			"min":[
-				-2,
-				-24,
-				-2
+				-50,
+				0,
+				-50
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":64,
+			"count":4,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":64,
+			"count":4,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":96,
+			"count":6,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":768,
+			"byteLength":48,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":768,
-			"byteOffset":768,
+			"byteLength":48,
+			"byteOffset":48,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":512,
-			"byteOffset":1536,
+			"byteLength":32,
+			"byteOffset":96,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":192,
-			"byteOffset":2048,
+			"byteLength":12,
+			"byteOffset":128,
 			"target":34963
 		}
 	],
@@ -140,8 +130,8 @@
 	],
 	"buffers":[
 		{
-			"byteLength":2240,
-			"uri":"bridge.bin"
+			"byteLength":140,
+			"uri":"floor.bin"
 		}
 	]
 }

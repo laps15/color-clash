@@ -70,7 +70,6 @@ layout_mode = 2
 size_flags_horizontal = 4
 
 [node name="Timer" type="Timer" parent="GameOver"]
-one_shot = true
 
 [node name="KDPanel" type="Panel" parent="."]
 anchors_preset = 1

@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c70ick77wej8m"
-path="res://.godot/imported/bridge.gltf-627b5447452bdff8e451bd81101c8c99.scn"
+uid="uid://dwbqn571ldiok"
+path="res://.godot/imported/floor.gltf-8b207b3f33419f8c29e349233e4daf99.scn"
 
 [deps]
 
-source_file="res://Maps/Resources/bridge.gltf"
-dest_files=["res://.godot/imported/bridge.gltf-627b5447452bdff8e451bd81101c8c99.scn"]
+source_file="res://Maps/Resources/floor.gltf"
+dest_files=["res://.godot/imported/floor.gltf-8b207b3f33419f8c29e349233e4daf99.scn"]
 
 [params]
 
