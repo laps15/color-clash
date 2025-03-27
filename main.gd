@@ -8,6 +8,8 @@ extends Node
 
 var level
 var player_colors = [
+	Color.AZURE,
+	Color.SADDLE_BROWN,
 	Color.RED,
 	Color.REBECCA_PURPLE,
 	Color.BLUE,
@@ -59,7 +61,7 @@ func _on_join_button_pressed() -> void:
 	multiplayer.multiplayer_peer = enet_peer
 
 func add_player(peer_id):
-	var initial_pos = Vector3(randf_range(-10,10), 0, randf_range(-10, 10))
+	var initial_pos = Vector3(-30 + randf_range(-10,10), 0, -30 + randf_range(-10, 10))
 	var color = player_colors.pop_front()
 	
 	var player = self.spawner.spawn({

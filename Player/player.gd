@@ -1,23 +1,28 @@
 extends CharacterBody3D
 class_name Player
 
-@onready var camera = $PlayerCamera
-@onready var anim_player = $AnimationPlayer
-@onready var paint_gun = $PlayerCamera/GunSlot/PaintGun
-@onready var mesh_instance: MeshInstance3D = $Body
-@onready var hit_box: CollisionShape3D = $CollisionShape3D
-@onready var hud = $PlayerCamera/HUD
-@onready var level_map = $/root/Main/Level
 
-@export var color: Color
+@export var anim_player: AnimationPlayer
+@export var uncrouch_shape_cast: ShapeCast3D
+@export var mesh_instance: MeshInstance3D
+@export var camera: Camera3D
+@export var paint_gun: Node3D
+@export var hit_box: CollisionShape3D
+@export var hud: CanvasLayer
 
 # Player stats
 @export var current_hp = 2
+@export var is_crouched: bool = false
+
+@onready var level_map = $/root/Main/Level
+
+@export var color: Color
 
 var started_fall = null
 var move_speed_modifier = 1.
 var movement_disabled = false
 
+const CROUCH_SPEED = 7.0
 const SPEED = 10.0
 const JUMP_VELOCITY = 7.5
 
@@ -25,6 +30,8 @@ func _enter_tree() -> void:
 	self.set_multiplayer_authority(str(self.name).to_int(), true)
 
 func _ready() -> void:
+	self.uncrouch_shape_cast.add_exception(self)
+	
 	var material = StandardMaterial3D.new()
 	material.albedo_color = self.color
 	self.mesh_instance.set_surface_override_material(0, material)
@@ -51,18 +58,22 @@ func _unhandled_input(event: InputEvent) -> void:
 		rotate_y(-event.relative.x * .005)
 		camera.rotate_x(-event.relative.y * .005)
 		camera.rotation.x = clamp(camera.rotation.x, -PI/2, PI/2)
-		
+
+	if Input.is_action_just_pressed("crouch"):
+		self.crouch.rpc()
+	if Input.is_action_just_released("crouch"):
+		self.uncrouch.rpc()
+
+	if self.is_crouched:
+		return
+
 	if Input.is_action_just_pressed("reload") and not self.is_reloading():
-			self.play_reload_effects.rpc()
-			
+		self.play_reload_effects.rpc()
 	if Input.is_action_just_pressed("shoot") and not self.is_shooting() and not self.is_reloading():
-			self.play_shoot_effects.rpc()
+		self.play_shoot_effects.rpc()
 
 func _physics_process(delta: float) -> void:
 	if not self.is_multiplayer_authority():
-		return
-
-	if current_hp == 0:
 		return
 
 	# Add the gravity.
@@ -86,6 +97,8 @@ func _physics_process(delta: float) -> void:
 
 	if is_on_floor():
 		move_speed_modifier = self.get_color_speed_modifier()
+		if is_crouched:
+			move_speed_modifier *= 0.5
 
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
@@ -98,10 +111,13 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0, SPEED * move_speed_modifier)
 		velocity.z = move_toward(velocity.z, 0, SPEED * move_speed_modifier)
 
-	if not self.is_shooting() and not self.is_reloading():
+	if self.is_idle_or_moving():
 		anim_player.play( "Move" if input_dir != Vector2.ZERO and self.is_on_floor() else "Idle")
 
 	move_and_slide()
+
+func is_idle_or_moving() -> bool:
+	return not self.is_shooting() and not self.is_reloading() and not (self.is_crouched or is_crouching())
 
 func get_color_speed_modifier() -> float:
 	for i in get_slide_collision_count():
@@ -121,6 +137,9 @@ func get_color_speed_modifier() -> float:
 			return 0.5
 	return 1
 
+func is_crouching():
+	return anim_player.current_animation == "Crouch"
+
 func is_shooting():
 	return anim_player.current_animation == "Shoot"
 
@@ -136,7 +155,6 @@ func play_shoot_effects() -> void:
 
 @rpc("call_local")
 func play_reload_effects() -> void:
-	print("Reloading...")
 	anim_player.stop()
 	anim_player.play("Reload")
 
@@ -182,7 +200,8 @@ func respawn() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	self.paint_gun.reload()
 	self.set_current_hp(2)
-	started_fall = null
+	self.started_fall = null
+	self.is_crouched = false
 	self.global_position = Vector3(randf_range(-10,10), 0, randf_range(-10, 10))
 	self.reveal_body.rpc()
 	self.movement_disabled = false
@@ -192,9 +211,31 @@ func reveal_body() -> void:
 	self.hit_box.disabled = false
 	self.show()
 
+@rpc("call_local")
+func crouch():
+	if not self.is_crouched:
+		self.anim_player.play("Crouch", -1, CROUCH_SPEED)
+
+@rpc("call_local")
+func uncrouch():
+	if self.is_crouched and not self.uncrouch_shape_cast.is_colliding():
+		self.anim_player.play("Crouch", -1, -CROUCH_SPEED, true)
+	elif self.is_crouched:
+		await get_tree().create_timer(0.1).timeout
+		self.uncrouch.rpc()
+
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 	if anim_name == "Shoot":
 		anim_player.play("Idle" )
+
 	if anim_name == "Reload":
 		paint_gun.reload()
 		anim_player.play("Idle" )
+		
+	if anim_name == "Crouch":
+		if not self.is_crouched:
+			anim_player.play("Idle" )
+
+func _on_animation_player_animation_started(anim_name: StringName) -> void:
+	if anim_name == "Crouch":
+		self.is_crouched = !self.is_crouched
