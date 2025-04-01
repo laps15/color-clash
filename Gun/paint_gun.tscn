@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://o3tu62qtwmmy"]
+[gd_scene load_steps=5 format=3 uid="uid://o3tu62qtwmmy"]
 
 [ext_resource type="PackedScene" uid="uid://hliq8cajjv5q" path="res://Gun/paint_emitter.tscn" id="2_dbrv2"]
 [ext_resource type="PackedScene" uid="uid://cpxb3t6csgplf" path="res://Gun/Resources/lowpoly_watergun/scene.gltf" id="3_bh045"]
@@ -29,6 +29,10 @@ func reload() -> void:
 	self.bullets_on_mag = self.mag_size
 "
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_dbrv2"]
+height = 10.7012
+radius = 1.3999
+
 [node name="PaintGun" type="Node3D"]
 script = SubResource("GDScript_hi3di")
 mag_size = 30
@@ -36,5 +40,11 @@ mag_size = 30
 [node name="Sketchfab_Scene" parent="." instance=ExtResource("3_bh045")]
 transform = Transform3D(-0.001, 0, 1.50996e-10, 0, 0.001, 0, -1.50996e-10, 0, -0.001, 0, 0, 0)
 
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Sketchfab_Scene/Sketchfab_model/0a783c2cb55a47178bbd4166d1675c43_fbx/RootNode/RG_WG/RG_WG_RG_WG_blue_0" index="0"]
+transform = Transform3D(1, -2.75671e-07, -3.3662e-13, 1.16573e-14, -4.37145e-08, -1, 2.69152e-07, 1.00001, -4.37133e-08, 4.45056e-07, 0.820715, -0.540038)
+shape = SubResource("CylinderShape3D_dbrv2")
+
 [node name="PaintEmitter" parent="." instance=ExtResource("2_dbrv2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00467511, 0.0517168, -0.388499)
+
+[editable path="Sketchfab_Scene"]

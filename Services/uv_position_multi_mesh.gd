@@ -96,7 +96,7 @@ func get_uv_coords(instance_id: int, point, normal, transform = true):
 
 	return bary2cart(uv1, uv2, uv3, bc)
 
-func equals_with_epsilon(v1, v2, epsilon):
+func equals_with_epsilon(v1, v2, epsilon: float):
 	return v1.distance_to(v2) < epsilon
   
 func cart2bary(p : Vector3, a : Vector3, b : Vector3, c: Vector3) -> Vector3:

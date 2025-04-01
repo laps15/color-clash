@@ -63,11 +63,3 @@ alignment = 1
 [connection signal="pressed" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
 
 [editable path="Level"]
-[editable path="Level/map_base"]
-[editable path="Level/map_base/bridge"]
-[editable path="Level/map_base/box_11"]
-[editable path="Level/map_base/box_12"]
-[editable path="Level/map_base/box_13"]
-[editable path="Level/map_base/box_21"]
-[editable path="Level/map_base/box_22"]
-[editable path="Level/map_base/box_23"]
