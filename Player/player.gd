@@ -1,31 +1,55 @@
 extends CharacterBody3D
 class_name Player
 
+enum PlayerMode {HUMANOID, BALL}
 
 @export var anim_player: AnimationPlayer
 @export var uncrouch_shape_cast: ShapeCast3D
-@export var mesh_instance: MeshInstance3D
 @export var camera: Camera3D
 @export var paint_gun: Node3D
 @export var gun_slot: Node3D
-@export var hit_box: CollisionShape3D
 @export var hud: CanvasLayer
+
+# Humanoid exported vars
+@export var humanoid_hit_box: CollisionShape3D
+@export var humanoid_mesh_instance: MeshInstance3D
+
+# Ball exported vars
+@export var ball_hit_box: CollisionShape3D
+@export var ball_mesh_instance: MeshInstance3D
+@export var ray_checker: Node3D
+
+# Configs
+@export var mouse_sensivity = 0.005
 
 # Player stats
 @export var current_hp = 2
 @export var is_crouched: bool = false
+@export var player_mode: PlayerMode = PlayerMode.HUMANOID
 
 @onready var level_map = $/root/Main/Level
 
 @export var color: Color
 
+const CROUCH_SPEED = 7.0
+const SPEED = 10.0
+const JUMP_VELOCITY = 7.5
+const GRAVITY_SPEED = 9.8
+
+const MOTION_INTERPOLATION_SPEED = 10
+const ROTATION_INTERPOLATION_SPEED = 10
+const ACCELERATION = 10
+
 var started_fall = null
 var move_speed_modifier = 1.
 var movement_disabled = false
 
-const CROUCH_SPEED = 7.0
-const SPEED = 10.0
-const JUMP_VELOCITY = 7.5
+# ball mode vars
+var gravity: Vector3 = Vector3.DOWN * GRAVITY_SPEED
+var orientation = Transform3D()
+var motion = Vector2()
+var vertical_velocity: Vector3 = Vector3.ZERO
+var attached_to: StaticBody3D
 
 func _enter_tree() -> void:
 	self.set_multiplayer_authority(str(self.name).to_int(), true)
@@ -35,7 +59,10 @@ func _ready() -> void:
 	
 	var material = StandardMaterial3D.new()
 	material.albedo_color = self.color
-	self.mesh_instance.set_surface_override_material(0, material)
+	self.humanoid_mesh_instance.set_surface_override_material(0, material)
+
+	self.ball_mesh_instance.hide()
+	self.ball_hit_box.disabled = true
 	
 	if not self.is_multiplayer_authority():
 		return
@@ -51,22 +78,51 @@ func set_current_hp(current_hp: int) -> void:
 	self.current_hp = current_hp
 	self.hud.update_hp.rpc(self.current_hp)
 
+func transform_into():
+	self.player_mode = PlayerMode.BALL
+	self.humanoid_hit_box.disabled = true
+	self.humanoid_mesh_instance.hide()
+	
+	self.ball_hit_box.disabled = false
+	self.ball_mesh_instance.show()
+
+func transform_out():
+	self.player_mode = PlayerMode.HUMANOID
+	self.ball_hit_box.disabled = true
+	self.ball_mesh_instance.hide()
+	
+	self.humanoid_hit_box.disabled = false
+	self.humanoid_mesh_instance.show()
+	
+	self.up_direction = Vector3.UP
+	self.gravity = Vector3.DOWN * GRAVITY_SPEED
+	self.orientation = Transform3D()
+	self.motion = Vector2()
+	self.vertical_velocity = Vector3.ZERO
+	self.attached_to = null
+
 func _unhandled_input(event: InputEvent) -> void:
 	if not self.is_multiplayer_authority():
 		return
 
+	match self.player_mode:
+		PlayerMode.HUMANOID:
+			self._unhandled_humanoid_input(event)
+		PlayerMode.BALL:
+			self._unhandled_ball_input(event)
+
+func _unhandled_humanoid_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		rotate_y(-event.relative.x * .005)
-		self.camera.rotate_x(-event.relative.y * .005)
+		rotate_y(-event.relative.x * mouse_sensivity)
+		self.camera.rotate_x(-event.relative.y * mouse_sensivity)
 		self.camera.rotation.x = clamp(camera.rotation.x, -PI/4, PI/4)
-		print("Event: ", -event.relative.y * .005)
-		print("Rotation b4: ", self.gun_slot.rotation.x)
-		self.gun_slot.rotate_x(-event.relative.y * .005)
+		self.gun_slot.rotate_x(-event.relative.y * mouse_sensivity)
 		self.gun_slot.rotation.x = clamp(self.gun_slot.rotation.x, -PI/4, PI/4)
-		print("Rotation after: ", self.gun_slot.rotation)
 
 	if Input.is_action_just_pressed("crouch"):
-		self.crouch.rpc()
+		self.transform_into()
+		return
+
 	if Input.is_action_just_released("crouch"):
 		self.uncrouch.rpc()
 
@@ -78,6 +134,15 @@ func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("shoot") and not self.is_shooting() and not self.is_reloading():
 		self.play_shoot_effects.rpc()
 
+func _unhandled_ball_input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		self.rotate_y(-event.relative.x * mouse_sensivity)
+		self.camera.rotate_x(-event.relative.y * mouse_sensivity)
+		self.camera.rotation.x = clamp(self.camera.rotation.x, -PI/4, PI/4)
+
+	if Input.is_action_just_released("crouch"):
+		self.transform_out()
+
 func _physics_process(delta: float) -> void:
 	if not self.is_multiplayer_authority():
 		return
@@ -85,8 +150,21 @@ func _physics_process(delta: float) -> void:
 	if movement_disabled:
 		return
 
+	match self.player_mode:
+		PlayerMode.HUMANOID:
+			self._physics_process_humanoid(delta)
+		PlayerMode.BALL:
+			self._physics_process_ball(delta)
+
+func _physics_process_humanoid(delta: float) -> void:
+	if not self.is_multiplayer_authority():
+		return
+
+	if movement_disabled:
+		return
+
 	# Handle jump.
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 
 	# Get the input direction and handle the movement/deceleration.
@@ -94,18 +172,13 @@ func _physics_process(delta: float) -> void:
 	var input_dir := Input.get_vector("left", "right", "up", "down")
 	var direction := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 
-	if is_on_floor() or is_on_wall():
-		move_speed_modifier = self.get_color_speed_modifier()
-		if is_crouched:
-			move_speed_modifier *= 0.5
-
 	# Add the gravity.
 	if not self.movement_disabled and not self.is_on_floor():
 		if not started_fall:
 			started_fall = Time.get_ticks_msec()
-		elif Time.get_ticks_msec() - self.started_fall > 5000:
-			self.die()
-			return
+		#elif Time.get_ticks_msec() - self.started_fall > 5000:
+			#self.die()
+			#return
 
 		velocity += get_gravity() * delta
 	else:
@@ -124,6 +197,80 @@ func _physics_process(delta: float) -> void:
 		#anim_player.play("Idle")
 
 	self.move_and_slide()
+
+func _physics_process_ball(delta: float) -> void:
+	var input_dir := Input.get_vector("left", "right", "up", "down")
+
+	self.check_rays()
+
+	# Add the gravity.	
+	if not self.is_on_floor():
+		self.vertical_velocity += self.gravity * delta
+	else:
+		self.vertical_velocity = Vector3.ZERO
+
+	self._process_input(input_dir, delta)
+
+func check_rays():
+	var new_avg = self.ray_checker.get_avg_normal() as Vector3
+	if new_avg and new_avg != self.up_direction:
+		self.up_direction = new_avg
+		self.gravity = (-self.up_direction) * GRAVITY_SPEED
+	elif not new_avg:
+		self.up_direction = Vector3.UP
+		self.gravity = (-self.up_direction) * GRAVITY_SPEED
+
+func _process_input(input_dir: Vector2, delta: float) -> void:
+	self.motion = self.motion.lerp(input_dir, self.MOTION_INTERPOLATION_SPEED * delta)
+	
+	var camera_basis = self.camera.global_transform.basis
+	var camera_z = camera_basis.z
+	var camera_x = camera_basis.x
+	
+	camera_z = camera_z.normalized()
+	camera_x = camera_x.normalized()
+	
+	# Handle jump.
+	if Input.is_action_just_pressed("jump"): # and is_on_floor():
+		var jump_speed = self.JUMP_VELOCITY if self.up_direction == Vector3.UP else 0.5 * self.JUMP_VELOCITY
+		self.vertical_velocity += self.up_direction * jump_speed
+		self.up_direction = Vector3.UP
+		self.gravity = Vector3.DOWN * self.GRAVITY_SPEED
+
+	var player_look_at = camera_x * self.motion.x + camera_z * self.motion.y
+	
+	if self.ball_mesh_instance.rotation.y < -PI/2 or self.ball_mesh_instance.rotation.y > PI/2:
+		player_look_at.y = -player_look_at.y
+	
+	if player_look_at.length() > 0.001:
+		var q_from = orientation.basis.get_rotation_quaternion()
+		var q_to = Transform3D().looking_at(player_look_at, self.up_direction).basis
+		
+		orientation.basis = Basis(q_from.slerp(q_to, self.ROTATION_INTERPOLATION_SPEED * delta))
+
+	var horizontal_velocity = velocity
+
+	var color_speed_modifier = self.get_color_speed_modifier()
+	var direction = (camera_basis * Vector3(self.motion.x, 0, self.motion.y))
+	var position_target = direction * self.SPEED * color_speed_modifier
+	
+	if direction.length() < 0.001:
+		horizontal_velocity = Vector3.ZERO
+	else:
+		horizontal_velocity = horizontal_velocity.lerp(position_target, ACCELERATION * delta)
+
+	# Negate velocity on normal direction
+	var normal_squared = self.up_direction.dot(self.up_direction)
+	var velocity_on_normal = horizontal_velocity.dot(self.up_direction) / normal_squared * self.up_direction
+	horizontal_velocity -= velocity_on_normal
+	
+	velocity = horizontal_velocity + self.vertical_velocity
+
+	move_and_slide()
+
+	self.orientation.origin = Vector3()
+	self.orientation = self.orientation.orthonormalized()
+	self.ball_mesh_instance.global_transform.basis = self.orientation.basis
 
 func is_idle_or_moving() -> bool:
 	return not self.is_shooting() and not self.is_reloading() and not (self.is_crouched or is_crouching())
@@ -216,7 +363,7 @@ func die(attacker_path: NodePath = ""):
 
 @rpc("call_local")
 func remove_body() -> void:
-	self.hit_box.disabled = true
+	self.humanoid_hit_box.disabled = true
 	self.hide()
 
 func respawn() -> void:
@@ -231,7 +378,7 @@ func respawn() -> void:
 
 @rpc("call_local")
 func reveal_body() -> void:
-	self.hit_box.disabled = false
+	self.humanoid_hit_box.disabled = false
 	self.show()
 
 @rpc("call_local")
