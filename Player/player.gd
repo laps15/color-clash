@@ -60,6 +60,7 @@ func _ready() -> void:
 	var material = StandardMaterial3D.new()
 	material.albedo_color = self.color
 	self.humanoid_mesh_instance.set_surface_override_material(0, material)
+	self.ball_mesh_instance.set_surface_override_material(0, material)
 
 	self.ball_mesh_instance.hide()
 	self.ball_hit_box.disabled = true
@@ -78,6 +79,7 @@ func set_current_hp(current_hp: int) -> void:
 	self.current_hp = current_hp
 	self.hud.update_hp.rpc(self.current_hp)
 
+@rpc("call_local")
 func transform_into():
 	self.player_mode = PlayerMode.BALL
 	self.humanoid_hit_box.disabled = true
@@ -86,6 +88,7 @@ func transform_into():
 	self.ball_hit_box.disabled = false
 	self.ball_mesh_instance.show()
 
+@rpc("call_local")
 func transform_out():
 	self.player_mode = PlayerMode.HUMANOID
 	self.ball_hit_box.disabled = true
@@ -120,13 +123,7 @@ func _unhandled_humanoid_input(event: InputEvent) -> void:
 		self.gun_slot.rotation.x = clamp(self.gun_slot.rotation.x, -PI/4, PI/4)
 
 	if Input.is_action_just_pressed("crouch"):
-		self.transform_into()
-		return
-
-	if Input.is_action_just_released("crouch"):
-		self.uncrouch.rpc()
-
-	if self.is_crouched:
+		self.transform_into.rpc()
 		return
 
 	if Input.is_action_just_pressed("reload") and not self.is_reloading():
@@ -141,7 +138,7 @@ func _unhandled_ball_input(event: InputEvent) -> void:
 		self.camera.rotation.x = clamp(self.camera.rotation.x, -PI/4, PI/4)
 
 	if Input.is_action_just_released("crouch"):
-		self.transform_out()
+		self.transform_out.rpc()
 
 func _physics_process(delta: float) -> void:
 	if not self.is_multiplayer_authority():
@@ -190,11 +187,6 @@ func _physics_process_humanoid(delta: float) -> void:
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED * move_speed_modifier)
 		velocity.z = move_toward(velocity.z, 0, SPEED * move_speed_modifier)
-
-	#if self.is_idle() and input_dir != Vector2.ZERO:
-		#anim_player.play("Move", -1, 2.0)
-	#elif self.is_moving() and input_dir == Vector2.ZERO:
-		#anim_player.play("Idle")
 
 	self.move_and_slide()
 
@@ -272,9 +264,6 @@ func _process_input(input_dir: Vector2, delta: float) -> void:
 	self.orientation = self.orientation.orthonormalized()
 	self.ball_mesh_instance.global_transform.basis = self.orientation.basis
 
-func is_idle_or_moving() -> bool:
-	return not self.is_shooting() and not self.is_reloading() and not (self.is_crouched or is_crouching())
-
 func get_color_speed_modifier() -> float:
 	match get_color_on_direction(Vector3.DOWN):
 		-1:
@@ -301,15 +290,6 @@ func get_color_on_direction(direction: Vector3):
 		elif color != Color.TRANSPARENT:
 			return -1
 	return 0
-
-func is_crouching():
-	return anim_player.current_animation == "Crouch"
-
-func is_idle():
-	return anim_player.current_animation == "Idle"
-
-func is_moving():
-	return anim_player.current_animation == "Move"
 
 func is_shooting():
 	return anim_player.current_animation == "Shoot"

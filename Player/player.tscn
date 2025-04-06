@@ -163,6 +163,12 @@ properties/4/replication_mode = 1
 properties/5/path = NodePath(".:current_hp")
 properties/5/spawn = true
 properties/5/replication_mode = 1
+properties/6/path = NodePath("GunSlot:rotation")
+properties/6/spawn = true
+properties/6/replication_mode = 1
+properties/7/path = NodePath(".:player_mode")
+properties/7/spawn = true
+properties/7/replication_mode = 1
 
 [sub_resource type="SphereMesh" id="SphereMesh_k53q1"]
 

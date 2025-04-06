@@ -106,5 +106,3 @@ func handle_player_hit(hitter: String, hittee: String) -> void:
 	
 	print(str("At #", multiplayer.get_unique_id(), " #", str(hitter).to_int(), " hitted #", str(hittee).to_int()))
 	target.take_damage.rpc(target.get_path(), attacker.get_path())
-	
-	
