@@ -7,6 +7,7 @@ class_name Player
 @export var mesh_instance: MeshInstance3D
 @export var camera: Camera3D
 @export var paint_gun: Node3D
+@export var gun_slot: Node3D
 @export var hit_box: CollisionShape3D
 @export var hud: CanvasLayer
 
@@ -56,8 +57,13 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if event is InputEventMouseMotion:
 		rotate_y(-event.relative.x * .005)
-		camera.rotate_x(-event.relative.y * .005)
-		camera.rotation.x = clamp(camera.rotation.x, -PI/2, PI/2)
+		self.camera.rotate_x(-event.relative.y * .005)
+		self.camera.rotation.x = clamp(camera.rotation.x, -PI/4, PI/4)
+		print("Event: ", -event.relative.y * .005)
+		print("Rotation b4: ", self.gun_slot.rotation.x)
+		self.gun_slot.rotate_x(-event.relative.y * .005)
+		self.gun_slot.rotation.x = clamp(self.gun_slot.rotation.x, -PI/4, PI/4)
+		print("Rotation after: ", self.gun_slot.rotation)
 
 	if Input.is_action_just_pressed("crouch"):
 		self.crouch.rpc()
@@ -93,14 +99,8 @@ func _physics_process(delta: float) -> void:
 		if is_crouched:
 			move_speed_modifier *= 0.5
 
-	# Climb on inked walls
-	var can_climb_on_wall = can_climb_on_wall(direction)
-	if can_climb_on_wall:
-		print(str("Climbing wall at normal: ", direction, " new direction will be: ", direction))
-		direction += Vector3.UP * 0.6
-
 	# Add the gravity.
-	if not self.movement_disabled and not self.is_on_floor() and not can_climb_on_wall:
+	if not self.movement_disabled and not self.is_on_floor():
 		if not started_fall:
 			started_fall = Time.get_ticks_msec()
 		elif Time.get_ticks_msec() - self.started_fall > 5000:
@@ -114,22 +114,19 @@ func _physics_process(delta: float) -> void:
 	if direction:
 		velocity.x = direction.x * SPEED * move_speed_modifier 
 		velocity.z = direction.z * SPEED * move_speed_modifier
-		if can_climb_on_wall:
-			velocity.y = direction.y * SPEED * move_speed_modifier
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED * move_speed_modifier)
 		velocity.z = move_toward(velocity.z, 0, SPEED * move_speed_modifier)
 
-	if self.is_idle_or_moving():
-		anim_player.play( "Move" if input_dir != Vector2.ZERO and self.is_on_floor() else "Idle")
+	#if self.is_idle() and input_dir != Vector2.ZERO:
+		#anim_player.play("Move", -1, 2.0)
+	#elif self.is_moving() and input_dir == Vector2.ZERO:
+		#anim_player.play("Idle")
 
 	self.move_and_slide()
 
 func is_idle_or_moving() -> bool:
 	return not self.is_shooting() and not self.is_reloading() and not (self.is_crouched or is_crouching())
-
-func can_climb_on_wall(move_direction: Vector3):
-	return get_color_on_direction(move_direction) == 1
 
 func get_color_speed_modifier() -> float:
 	match get_color_on_direction(Vector3.DOWN):
@@ -161,6 +158,12 @@ func get_color_on_direction(direction: Vector3):
 func is_crouching():
 	return anim_player.current_animation == "Crouch"
 
+func is_idle():
+	return anim_player.current_animation == "Idle"
+
+func is_moving():
+	return anim_player.current_animation == "Move"
+
 func is_shooting():
 	return anim_player.current_animation == "Shoot"
 
@@ -170,8 +173,7 @@ func is_reloading():
 @rpc("call_local")
 func play_shoot_effects() -> void:
 	if paint_gun.can_shoot():
-		anim_player.stop()
-		anim_player.play("Shoot")
+		#anim_player.play("Shoot")
 		paint_gun.shoot(str(self.name), self.color)
 
 @rpc("call_local")
@@ -246,16 +248,16 @@ func uncrouch():
 		self.uncrouch.rpc()
 
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:
-	if anim_name == "Shoot":
-		anim_player.play("Idle" )
+	#if anim_name == "Shoot":
+		#anim_player.play("Idle")
 
 	if anim_name == "Reload":
 		paint_gun.reload()
-		anim_player.play("Idle" )
-		
-	if anim_name == "Crouch":
-		if not self.is_crouched:
-			anim_player.play("Idle" )
+		#anim_player.play("Idle")
+		#
+	#if anim_name == "Crouch":
+		#if not self.is_crouched:
+			#anim_player.play("Idle")
 
 func _on_animation_player_animation_started(anim_name: StringName) -> void:
 	if anim_name == "Crouch":
