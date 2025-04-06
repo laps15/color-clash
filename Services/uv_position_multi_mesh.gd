@@ -6,7 +6,6 @@ var meshes = {}
 var transform_vertex_to_global = true
 
 func set_mesh(_mesh_instance: MeshInstance3D, instance_id):
-	var parent = _mesh_instance.get_parent_node_3d()
 	meshes[instance_id] = {
 		"mesh_instance": _mesh_instance,
 		"mesh": _mesh_instance.mesh,
