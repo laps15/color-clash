@@ -20,9 +20,6 @@ func _ready() -> void:
 	if not self.is_multiplayer_authority():
 		return
 
-	var heart_size = self.hp_points[0].size
-	self.size = Vector2((heart_size[0] + 5) * len(self.hp_points), heart_size[1])
-
 	for idx in range(max_value):
 		if idx < current_value :
 			self.hp_points[idx].increase()

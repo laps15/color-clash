@@ -30,7 +30,7 @@ func _ready() -> void:
 
 	ProcessProjectileCollisions.connect("palyer_hit", handle_player_hit)
 
-func _unhandled_input(event: InputEvent) -> void:
+func _unhandled_input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed("quit"):
 		self.get_tree().quit()
 
@@ -39,15 +39,24 @@ func _on_host_button_pressed() -> void:
 	main_menu.hide()
 	
 	enet_peer.create_server(PORT)
+	
+	var addr = adress_entry.text.lstrip(' ').rstrip(' ')
+	if addr and addr != '':
+		print("Binding host address to: ", addr)
+		enet_peer.set_bind_ip(addr)
+	
 	multiplayer.multiplayer_peer = enet_peer
 	multiplayer.peer_connected.connect(add_player)
 	multiplayer.peer_disconnected.connect(remove_player)
 	
 	add_player(multiplayer.get_unique_id())
+	while true:
+		print("Incomming connections: ", enet_peer.get_incoming_connections())
+		await self.get_tree().create_timer(1).timeout
 
 func _on_join_button_pressed() -> void:
 	main_menu.hide()
-	var addr = adress_entry.text
+	var addr = adress_entry.text.lstrip(' ').rstrip(' ')
 	var port = PORT
 	
 	var tks = addr.split(":")
@@ -55,12 +64,23 @@ func _on_join_button_pressed() -> void:
 		addr = tks[0]
 		port = tks[1]
 	
-	print(str("Connecting to ", addr, ":", port))
 	
-	enet_peer.create_client(addr, PORT)
+	var error = enet_peer.create_client(addr, PORT)
+	if error != OK:
+		printerr(error)
+	
 	multiplayer.multiplayer_peer = enet_peer
+	
+	print("Peer created status: ", ["Disconected", "Connecting...", "Connected"][enet_peer.get_connection_status()])
+	while enet_peer.get_connection_status() == enet_peer.CONNECTION_CONNECTING:
+		print("connecting state: ", enet_peer.get_peer(enet_peer.get_packet_peer()).get_state())
+		await self.get_tree().create_timer(1).timeout
+	
+	if enet_peer.get_connection_status() == enet_peer.CONNECTION_CONNECTED:
+		print("Connected to: ", enet_peer.host)
 
 func add_player(peer_id):
+	print(str("Connection #", peer_id, " received."))
 	var initial_pos = Vector3(-30 + randf_range(-10,10), 0, -30 + randf_range(-10, 10))
 	var color = player_colors.pop_front()
 	
@@ -70,32 +90,16 @@ func add_player(peer_id):
 		'initial_pos': initial_pos
 	})
 	
-	self.add_child(player)
+	if not player.get_parent():
+		self.add_child(player)
+	player.global_position = initial_pos
+
 	print(str("Player #", peer_id, " spawned."))
 	
 func remove_player(peer_id):
 	var player = get_node_or_null(str(peer_id))
 	if player:
 		player.queue_free()
-
-func upnp_setup():
-	var upnp = UPNP.new()
-	var discover_result = upnp.discover()
-	var device = upnp.get_device(0).get_class()
-	var map_result = device.add_port_mapping(PORT)
-	
-	assert(discover_result == UPNP.UPNP_RESULT_SUCCESS, \
-		"UPNP discover failed! Reason: %s" % discover_result)
-		
-	var gtw = upnp.get_gateway().is_valid_gateway()
-	assert(upnp.get_gateway() and upnp.get_gateway().is_valid_gateway(), \
-		"UPNP Invalid Gateway!")
-		
-	map_result = upnp.add_port_mapping(PORT)
-	assert(map_result == UPNP.UPNP_RESULT_SUCCESS, \
-		"UPNP port mapping failed! Error %s" % map_result)
-		
-	print("Success! Join Address: %s" % upnp.query_external_address())
 
 func handle_player_hit(hitter: String, hittee: String) -> void:
 	if not self.is_multiplayer_authority():

@@ -5,6 +5,7 @@ enum PlayerMode {HUMANOID, BALL}
 
 @export var anim_player: AnimationPlayer
 @export var uncrouch_shape_cast: ShapeCast3D
+@export var camera_pivot: Node3D
 @export var camera: Camera3D
 @export var paint_gun: Node3D
 @export var gun_slot: Node3D
@@ -18,9 +19,9 @@ enum PlayerMode {HUMANOID, BALL}
 @export var ball_hit_box: CollisionShape3D
 @export var ball_mesh_instance: MeshInstance3D
 @export var ray_checker: Node3D
-
 # Configs
-@export var mouse_sensivity = 0.005
+@export_range(0.001, 0.5) var mouse_sensivity = 0.005
+@export_range(-15, 15) var camera_to_gun_adjustment = -1.5
 
 # Player stats
 @export var current_hp = 2
@@ -71,18 +72,19 @@ func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	camera.current = true
 
-func set_color(color: Color) -> void:
-	self.color = color
+func set_color(new_color: Color) -> void:
+	self.color = new_color
 
 @rpc("call_local")
-func set_current_hp(current_hp: int) -> void:
-	self.current_hp = current_hp
+func set_current_hp(new_current_hp: int) -> void:
+	self.current_hp = new_current_hp
 	self.hud.update_hp.rpc(self.current_hp)
 
 @rpc("call_local")
 func transform_into():
 	self.player_mode = PlayerMode.BALL
 	self.humanoid_hit_box.disabled = true
+	self.gun_slot.hide()
 	self.humanoid_mesh_instance.hide()
 	
 	self.ball_hit_box.disabled = false
@@ -96,6 +98,7 @@ func transform_out():
 	
 	self.humanoid_hit_box.disabled = false
 	self.humanoid_mesh_instance.show()
+	self.gun_slot.show()
 	
 	self.up_direction = Vector3.UP
 	self.gravity = Vector3.DOWN * GRAVITY_SPEED
@@ -108,6 +111,12 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not self.is_multiplayer_authority():
 		return
 
+	# Input handling common to both modes
+	if event is InputEventMouseMotion:
+		rotate_y(-event.relative.x * mouse_sensivity)
+		self.camera_pivot.rotate_x(-event.relative.y * mouse_sensivity)
+		self.camera_pivot.rotation.x = clamp(self.camera_pivot.rotation.x, -PI/2, PI/2)
+
 	match self.player_mode:
 		PlayerMode.HUMANOID:
 			self._unhandled_humanoid_input(event)
@@ -116,10 +125,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _unhandled_humanoid_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		rotate_y(-event.relative.x * mouse_sensivity)
-		self.camera.rotate_x(-event.relative.y * mouse_sensivity)
-		self.camera.rotation.x = clamp(camera.rotation.x, -PI/4, PI/4)
-		self.gun_slot.rotate_x(-event.relative.y * mouse_sensivity)
+		self.gun_slot.rotate_x(-event.relative.y * mouse_sensivity * 0.5)
 		self.gun_slot.rotation.x = clamp(self.gun_slot.rotation.x, -PI/4, PI/4)
 
 	if Input.is_action_just_pressed("crouch"):
@@ -131,12 +137,7 @@ func _unhandled_humanoid_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("shoot") and not self.is_shooting() and not self.is_reloading():
 		self.play_shoot_effects.rpc()
 
-func _unhandled_ball_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion:
-		self.rotate_y(-event.relative.x * mouse_sensivity)
-		self.camera.rotate_x(-event.relative.y * mouse_sensivity)
-		self.camera.rotation.x = clamp(self.camera.rotation.x, -PI/4, PI/4)
-
+func _unhandled_ball_input(_event: InputEvent) -> void:
 	if Input.is_action_just_released("crouch"):
 		self.transform_out.rpc()
 
@@ -284,10 +285,10 @@ func get_color_on_direction(direction: Vector3):
 		if uv == null:
 			continue
 
-		var color = level_map.get_color_at_pos(collision_target.get_instance_id(), uv)
-		if color == self.color:
+		var color_from_map = level_map.get_color_at_pos(collision_target.get_instance_id(), uv)
+		if color_from_map == self.color:
 			return 1
-		elif color != Color.TRANSPARENT:
+		elif color_from_map != Color.TRANSPARENT:
 			return -1
 	return 0
 

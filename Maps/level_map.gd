@@ -30,7 +30,6 @@ func init_mesh_properties(mesh_instance: MeshInstance3D):
 	if not static_body:
 		return
 		
-	mesh_instance.mesh.generate_scene_unique_id()
 	var mesh_unique_id = static_body.get_instance_id()
 	UvPositionMultiMesh.set_mesh(mesh_instance, mesh_unique_id)
 	

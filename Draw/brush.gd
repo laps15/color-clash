@@ -6,8 +6,8 @@ extends Node2D
 var queue = []
 
 @rpc
-func queue_brush(position: Vector2, colour: Color):
-	queue.push_back([position, colour])
+func queue_brush(pos: Vector2, colour: Color):
+	queue.push_back([pos, colour])
 	queue_redraw()
 
 func _draw() -> void:
