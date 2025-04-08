@@ -17,7 +17,7 @@ step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerCamera:position")
+tracks/0/path = NodePath("CameraPivot/SpringArm3D/PlayerCamera:position")
 tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -102,7 +102,7 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerCamera:position")
+tracks/0/path = NodePath("CameraPivot/SpringArm3D/PlayerCamera:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -114,7 +114,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("PlayerCamera:rotation")
+tracks/1/path = NodePath("CameraPivot/SpringArm3D/PlayerCamera:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -151,24 +151,21 @@ properties/0/replication_mode = 1
 properties/1/path = NodePath(".:rotation")
 properties/1/spawn = true
 properties/1/replication_mode = 1
-properties/2/path = NodePath("PlayerCamera:rotation")
+properties/2/path = NodePath(".:color")
 properties/2/spawn = true
 properties/2/replication_mode = 1
-properties/3/path = NodePath(".:color")
+properties/3/path = NodePath(".:current_hp")
 properties/3/spawn = true
 properties/3/replication_mode = 1
-properties/4/path = NodePath("PlayerCamera/GunSlot/PaintGun:bullets_on_mag")
+properties/4/path = NodePath("GunSlot:rotation")
 properties/4/spawn = true
 properties/4/replication_mode = 1
-properties/5/path = NodePath(".:current_hp")
+properties/5/path = NodePath(".:player_mode")
 properties/5/spawn = true
 properties/5/replication_mode = 1
-properties/6/path = NodePath("GunSlot:rotation")
+properties/6/path = NodePath("GunSlot/PaintGun:bullets_on_mag")
 properties/6/spawn = true
 properties/6/replication_mode = 1
-properties/7/path = NodePath(".:player_mode")
-properties/7/spawn = true
-properties/7/replication_mode = 1
 
 [sub_resource type="SphereMesh" id="SphereMesh_k53q1"]
 
@@ -179,15 +176,16 @@ size = Vector3(1, 1, 0.25)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_gwnis"]
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("anim_player", "uncrouch_shape_cast", "camera", "paint_gun", "gun_slot", "hud", "humanoid_hit_box", "humanoid_mesh_instance", "ball_hit_box", "ball_mesh_instance", "ray_checker")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("anim_player", "uncrouch_shape_cast", "camera_pivot", "camera", "paint_gun", "gun_slot", "hud", "humanoid_hit_box", "humanoid_mesh_instance", "ball_hit_box", "ball_mesh_instance", "ray_checker")]
 collision_layer = 3
 script = ExtResource("1_6n6bo")
 anim_player = NodePath("AnimationPlayer")
 uncrouch_shape_cast = NodePath("ShapeCast3D")
-camera = NodePath("PlayerCamera")
+camera_pivot = NodePath("CameraPivot")
+camera = NodePath("CameraPivot/SpringArm3D/PlayerCamera")
 paint_gun = NodePath("GunSlot/PaintGun")
 gun_slot = NodePath("GunSlot")
-hud = NodePath("PlayerCamera/HUD")
+hud = NodePath("CameraPivot/SpringArm3D/PlayerCamera/HUD")
 humanoid_hit_box = NodePath("HumanoidCollisionShape3D")
 humanoid_mesh_instance = NodePath("HumanoidBody")
 ball_hit_box = NodePath("BallCollisionShape3D")
@@ -202,10 +200,17 @@ mesh = SubResource("CapsuleMesh_btcbx")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_onrkg")
 
-[node name="PlayerCamera" type="Camera3D" parent="."]
+[node name="CameraPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.57, 0)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 0.984808, 0.173648, 0, -0.173648, 0.984808, 0, 0, 0)
+spring_length = 3.57
+
+[node name="PlayerCamera" type="Camera3D" parent="CameraPivot/SpringArm3D"]
 transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 2.57023, 2.39482)
 
-[node name="HUD" parent="PlayerCamera" instance=ExtResource("3_ss5ws")]
+[node name="HUD" parent="CameraPivot/SpringArm3D/PlayerCamera" instance=ExtResource("3_ss5ws")]
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -216,9 +221,10 @@ libraries = {
 replication_config = SubResource("SceneReplicationConfig_i3pqv")
 
 [node name="GunSlot" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.984807, 0.173648, 0, -0.173648, 0.984808, 0.616187, 1.2, -0.274)
+transform = Transform3D(1, 0, 0, 0, 0.999999, 0, 0, 0, 1, 0.616187, 1.2, -0.274)
 
 [node name="PaintGun" parent="GunSlot" instance=ExtResource("2_au80b")]
+mag_size = 50
 bullets_on_mag = 30
 
 [node name="BallMeshInstance3D" type="MeshInstance3D" parent="."]
@@ -246,4 +252,4 @@ target_position = Vector3(0, 1, 0)
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
 [connection signal="animation_started" from="AnimationPlayer" to="." method="_on_animation_player_animation_started"]
 
-[editable path="PlayerCamera/HUD"]
+[editable path="CameraPivot/SpringArm3D/PlayerCamera/HUD"]
