@@ -1,0 +1,107 @@
+[gd_scene load_steps=2 format=3 uid="uid://bw5wba44f14hb"]
+
+[ext_resource type="Script" uid="uid://burdn2eodkjep" path="res://Player/ray_checker.gd" id="1_0t3jo"]
+
+[node name="RayChecker" type="Node3D"]
+script = ExtResource("1_0t3jo")
+
+[node name="Down" type="RayCast3D" parent="."]
+
+[node name="North" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+
+[node name="South" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1.19249e-08, 1, 0, -1, 1.19249e-08, 0, 0, 0)
+
+[node name="Up" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0)
+
+[node name="East" type="RayCast3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="West" type="RayCast3D" parent="."]
+transform = Transform3D(1.19249e-08, 1, 0, -1, 1.19249e-08, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="NorthWest" type="RayCast3D" parent="."]
+transform = Transform3D(0.707107, 0.707107, -3.09086e-08, 0, -4.37114e-08, -1, -0.707107, 0.707107, -3.09086e-08, 0, 0, 0)
+
+[node name="ShouthEast" type="RayCast3D" parent="."]
+transform = Transform3D(0.707107, -0.707107, 8.43216e-09, 0, 1.19249e-08, 1, -0.707107, -0.707107, 8.43216e-09, 0, 0, 0)
+
+[node name="NorthEast" type="RayCast3D" parent="."]
+transform = Transform3D(-3.09086e-08, -0.707107, 0.707107, 1, -4.37114e-08, 0, 3.09086e-08, 0.707107, 0.707107, 0, 0, 0)
+
+[node name="SouthEast" type="RayCast3D" parent="."]
+transform = Transform3D(8.43216e-09, 0.707107, 0.707107, -1, 1.19249e-08, 0, -8.43216e-09, -0.707107, 0.707107, 0, 0, 0)
+
+[node name="XDown" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+
+[node name="XNorth" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0)
+
+[node name="XSouth" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.707107, 0.707107, 0, -0.707107, -0.707107, 0, 0, 0)
+
+[node name="XUp" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.707107, -0.707107, 0, 0.707107, -0.707107, 0, 0, 0)
+
+[node name="ZDown" type="RayCast3D" parent="."]
+transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="ZUp" type="RayCast3D" parent="."]
+transform = Transform3D(0.707107, 0.707107, -6.18172e-08, 0.707107, -0.707107, 6.18172e-08, 0, -8.74228e-08, -1, 0, 0, 0)
+
+[node name="ZEast" type="RayCast3D" parent="."]
+transform = Transform3D(-0.707107, -0.707107, 0, 0.707107, -0.707107, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="ZWest" type="RayCast3D" parent="."]
+transform = Transform3D(0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="XYDown" type="RayCast3D" parent="."]
+transform = Transform3D(0.707107, 0.5, -0.5, 0, 0.707107, 0.707107, 0.707107, -0.5, 0.5, 0, 0, 0)
+
+[node name="XYNorth" type="RayCast3D" parent="."]
+transform = Transform3D(0.707107, -0.5, -0.5, 0, 0.707107, -0.707107, 0.707107, 0.5, 0.5, 0, 0, 0)
+
+[node name="XYSouth" type="RayCast3D" parent="."]
+transform = Transform3D(0.707107, 0.5, 0.5, 0, -0.707107, 0.707107, 0.707107, -0.5, -0.5, 0, 0, 0)
+
+[node name="XYUp" type="RayCast3D" parent="."]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, -0.707107, -0.707107, 0.707107, 0.5, -0.5, 0, 0, 0)
+
+[node name="YZDown" type="RayCast3D" parent="."]
+transform = Transform3D(0.5, -0.5, -0.707107, 0.707107, 0.707107, 0, 0.5, -0.5, 0.707107, 0, 0, 0)
+
+[node name="YZUp" type="RayCast3D" parent="."]
+transform = Transform3D(0.5, 0.5, 0.707107, 0.707107, -0.707107, 6.18172e-08, 0.5, 0.5, -0.707107, 0, 0, 0)
+
+[node name="YZEast" type="RayCast3D" parent="."]
+transform = Transform3D(-0.5, -0.5, -0.707107, 0.707107, -0.707107, 0, -0.5, -0.5, 0.707107, 0, 0, 0)
+
+[node name="YZWest" type="RayCast3D" parent="."]
+transform = Transform3D(0.5, 0.5, -0.707107, -0.707107, 0.707107, 0, 0.5, 0.5, 0.707107, 0, 0, 0)
+
+[node name="FrontTop" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.25, 0)
+
+[node name="FrontBottom" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.25, 0)
+
+[node name="BackTop" type="RayCast3D" parent="."]
+transform = Transform3D(-1, -8.74228e-08, 3.82137e-15, 0, -4.37114e-08, -1, 8.74228e-08, -1, 4.37114e-08, 0, 0.25, 0)
+
+[node name="BackBottom" type="RayCast3D" parent="."]
+transform = Transform3D(-1, -8.74228e-08, 3.82137e-15, 0, -4.37114e-08, -1, 8.74228e-08, -1, 4.37114e-08, 0, -0.25, 0)
+
+[node name="LeftTop" type="RayCast3D" parent="."]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, 0.25, 0)
+
+[node name="LeftBottom" type="RayCast3D" parent="."]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, -0.25, 0)
+
+[node name="RightTop" type="RayCast3D" parent="."]
+transform = Transform3D(1.31134e-07, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, 1.31134e-07, -5.73206e-15, 0, 0.25, 0)
+
+[node name="RightBottom" type="RayCast3D" parent="."]
+transform = Transform3D(1.31134e-07, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, 1.31134e-07, -5.73206e-15, 0, -0.25, 0)
