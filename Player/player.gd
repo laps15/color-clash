@@ -27,8 +27,9 @@ enum PlayerMode {HUMANOID, BALL}
 @export var current_hp = 2
 @export var is_crouched: bool = false
 @export var player_mode: PlayerMode = PlayerMode.HUMANOID
+var player_name: String
 
-@onready var level_map = $/root/Main/Level
+@onready var level_map = $/root/Game/Level
 
 @export var color: Color
 
@@ -71,13 +72,13 @@ func _ready() -> void:
 
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	camera.current = true
+	self.hud.set_player_name(self.player_name)
 
-func set_color(color: Color) -> void:
-	self.color = color
+func set_color(new_color: Color) -> void:
+	self.color = new_color
 
-@rpc("call_local")
-func set_current_hp(current_hp: int) -> void:
-	self.current_hp = current_hp
+func set_current_hp(new_current_hp: int) -> void:
+	self.current_hp = new_current_hp
 	self.hud.update_hp.rpc(self.current_hp)
 
 @rpc("call_local")
@@ -137,7 +138,7 @@ func _unhandled_humanoid_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("shoot") and not self.is_shooting() and not self.is_reloading():
 		self.play_shoot_effects.rpc()
 
-func _unhandled_ball_input(event: InputEvent) -> void:
+func _unhandled_ball_input(_event: InputEvent) -> void:
 	if Input.is_action_just_released("crouch"):
 		self.transform_out.rpc()
 
@@ -285,10 +286,10 @@ func get_color_on_direction(direction: Vector3):
 		if uv == null:
 			continue
 
-		var color = level_map.get_color_at_pos(collision_target.get_instance_id(), uv)
-		if color == self.color:
+		var color_on_map = level_map.get_color_at_pos(collision_target.get_instance_id(), uv)
+		if color_on_map == self.color:
 			return 1
-		elif color != Color.TRANSPARENT:
+		elif color_on_map != Color.TRANSPARENT:
 			return -1
 	return 0
 
@@ -310,11 +311,8 @@ func play_reload_effects() -> void:
 	anim_player.play("Reload")
 
 @rpc("any_peer", "call_local")
-func take_damage(target_path: NodePath, attacker_path: NodePath) -> void:
-	if target_path != self.get_path():
-		return
-
-	self.set_current_hp.rpc(self.current_hp - 1)
+func take_damage(attacker_path: NodePath) -> void:
+	self.set_current_hp(self.current_hp - 1)
 	if current_hp == 0:
 		self.die(attacker_path)
 		if self.is_multiplayer_authority():

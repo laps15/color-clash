@@ -13,24 +13,21 @@ var mesh_to_texture_map = {
 }
 
 func _ready():
-	if not self.is_multiplayer_authority():
-		return
-
 	for child in self.find_children("*", "MeshInstance3D", true):
 		self.init_mesh_properties(child as MeshInstance3D)
 		
 	print(str("We currently have ", len(mesh_viewport_map), " viewports instantiated"))
 	for mesh_unique_id in mesh_viewport_map:
 		print(str("Viewport #", mesh_unique_id, " size: (", mesh_viewport_map[mesh_unique_id].size[0], ", ", mesh_viewport_map[mesh_unique_id].size[1], ")"))
-		
-	ProcessProjectileCollisions.connect("map_hit", self.paint.rpc)
+
+	if self.is_multiplayer_authority():
+		ProcessProjectileCollisions.connect("map_hit", self.paint.rpc)
 
 func init_mesh_properties(mesh_instance: MeshInstance3D):
 	var static_body = mesh_instance.get_node("StaticBody3D")
 	if not static_body:
 		return
 		
-	mesh_instance.mesh.generate_scene_unique_id()
 	var mesh_unique_id = static_body.get_instance_id()
 	UvPositionMultiMesh.set_mesh(mesh_instance, mesh_unique_id)
 	

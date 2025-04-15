@@ -39,11 +39,11 @@ func update_hp(hp_value: int) -> void:
 
 	hp_bar.set_value(hp_value)
 
-func set_player_name() -> void:
+func set_player_name(player_name: String = "") -> void:
 	if not self.is_multiplayer_authority():
 		return
 
-	player_name_label.text = str('#', self.get_multiplayer_authority())
+	player_name_label.text = player_name
 
 func increase_kill_count() -> void:
 	if not self.is_multiplayer_authority():

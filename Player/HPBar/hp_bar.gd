@@ -38,5 +38,4 @@ func set_value(value: int) -> void:
 			self.hp_points[idx].increase()
 		else:
 			self.hp_points[idx].decrease()
-		self.hbox_container.add_child(self.hp_points[idx])
 	
