@@ -15,10 +15,6 @@ var mesh_to_texture_map = {
 func _ready():
 	for child in self.find_children("*", "MeshInstance3D", true):
 		self.init_mesh_properties(child as MeshInstance3D)
-		
-	print(str("We currently have ", len(mesh_viewport_map), " viewports instantiated"))
-	for mesh_unique_id in mesh_viewport_map:
-		print(str("Viewport #", mesh_unique_id, " size: (", mesh_viewport_map[mesh_unique_id].size[0], ", ", mesh_viewport_map[mesh_unique_id].size[1], ")"))
 
 	if self.is_multiplayer_authority():
 		ProcessProjectileCollisions.connect("map_hit", self.paint.rpc)
@@ -54,7 +50,6 @@ func paint(mesh_path: NodePath, pos: Vector2, color: Color = Color.RED):
 	var mesh_unique_id = node.get_instance_id()
 	var viewport_size = mesh_viewport_map[mesh_unique_id].size
 	var converted_pos = Vector2(pos[0] * viewport_size[0], pos[1] * viewport_size[1])
-	print(str("painting node #", mesh_unique_id, " @ viewport: ", mesh_viewport_map[mesh_unique_id]))
 	mesh_viewport_map[mesh_unique_id].paint(converted_pos, color)
 
 

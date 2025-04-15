@@ -56,19 +56,20 @@ var attached_to: StaticBody3D
 func _enter_tree() -> void:
 	self.set_multiplayer_authority(str(self.name).to_int(), true)
 
-func _ready() -> void:
-	self.uncrouch_shape_cast.add_exception(self)
-	
+func _ready() -> void:	
 	var material = StandardMaterial3D.new()
 	material.albedo_color = self.color
 	self.humanoid_mesh_instance.set_surface_override_material(0, material)
 	self.ball_mesh_instance.set_surface_override_material(0, material)
-
-	self.ball_mesh_instance.hide()
-	self.ball_hit_box.disabled = true
 	
 	if not self.is_multiplayer_authority():
 		return
+
+	print("on #", multiplayer.get_unique_id(), " #", self.name, " _ready. mpa is #", self.get_multiplayer_authority())
+	self.uncrouch_shape_cast.add_exception(self)
+
+	self.ball_mesh_instance.hide()
+	
 
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	camera.current = true
@@ -136,6 +137,7 @@ func _unhandled_humanoid_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("reload") and not self.is_reloading():
 		self.play_reload_effects.rpc()
 	if Input.is_action_just_pressed("shoot") and not self.is_shooting() and not self.is_reloading():
+		print("on #", multiplayer.get_unique_id(), " #", self.name, " _unhandled_humanoid_input. mpa is #", self.get_multiplayer_authority())
 		self.play_shoot_effects.rpc()
 
 func _unhandled_ball_input(_event: InputEvent) -> void:
@@ -301,6 +303,7 @@ func is_reloading():
 
 @rpc("call_local")
 func play_shoot_effects() -> void:
+	print("on #", multiplayer.get_unique_id(), " #", self.name, " shoot. mpa is #", self.get_multiplayer_authority())
 	if paint_gun.can_shoot():
 		#anim_player.play("Shoot")
 		paint_gun.shoot(str(self.name), self.color)
@@ -314,11 +317,10 @@ func play_reload_effects() -> void:
 func take_damage(attacker_path: NodePath) -> void:
 	self.set_current_hp(self.current_hp - 1)
 	if current_hp == 0:
-		self.die(attacker_path)
-		if self.is_multiplayer_authority():
+		self.die()
+		if multiplayer.is_server():
 			self.get_node(attacker_path).increase_kill_count.rpc()
 			hud.increase_death_count()
-		self.die()
 		hud.display_game_over(self)
 
 @rpc("any_peer", "call_local")
@@ -326,16 +328,13 @@ func increase_kill_count() -> void:
 	if self.is_multiplayer_authority():
 		hud.increase_kill_count()
 
-func die(attacker_path: NodePath = ""):
+func die():
 	if not self.is_multiplayer_authority():
 		return
 
 	self.movement_disabled = true
 	self.set_current_hp(0)
 	print("On #", multiplayer.get_unique_id(), " die")
-	hud.increase_death_count()
-	if attacker_path != NodePath(""):
-		self.get_node(attacker_path).increase_kill_count.rpc()
 	hud.display_game_over(self)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	self.remove_body.rpc()
