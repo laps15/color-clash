@@ -2,18 +2,32 @@
 
 [ext_resource type="PackedScene" uid="uid://icdargwf88w1" path="res://addons/lobby_lib/Views/landing_page.tscn" id="1_h2yge"]
 [ext_resource type="Script" uid="uid://eyjwaws2cohu" path="res://main.gd" id="1_lquwl"]
-[ext_resource type="PackedScene" uid="uid://djjivgknw8vqw" path="res://addons/lobby_lib/Views/2_teams_lobby.tscn" id="2_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://dkergnietmeey" path="res://addons/lobby_lib/Views/ffa_lobby.tscn" id="3_lquwl"]
+[ext_resource type="PackedScene" uid="uid://djjivgknw8vqw" path="res://addons/lobby_lib/Views/2_teams_lobby.tscn" id="4_1bvp3"]
 
-[node name="Main" type="Node" node_paths=PackedStringArray("landing_page", "lobby_page")]
+[node name="Main" type="Node" node_paths=PackedStringArray("landing_page", "ffa_lobby_page", "teams_lobby_page")]
 script = ExtResource("1_lquwl")
-game_scene_path = "uid://bnlf8u1rmrgon"
+ffa_game_scene_path = "uid://bnlf8u1rmrgon"
+teams_game_scene_path = "uid://bjg62qg4xigsr"
 landing_page = NodePath("LandingPage")
-lobby_page = NodePath("FFALobby")
+ffa_lobby_page = NodePath("FFALobby")
+teams_lobby_page = NodePath("2TeamsLobby")
 
 [node name="LandingPage" parent="." instance=ExtResource("1_h2yge")]
-
-[node name="2TeamsLobby" parent="." instance=ExtResource("2_1bvp3")]
 visible = false
 
 [node name="FFALobby" parent="." instance=ExtResource("3_lquwl")]
+
+[node name="VSplitContainer" parent="FFALobby/PanelContainer/HSplitContainer" index="1"]
+split_offset = 575
+
+[node name="2TeamsLobby" parent="." instance=ExtResource("4_1bvp3")]
+
+[node name="VSplitContainer" parent="2TeamsLobby/PanelContainer/HSplitContainer" index="1"]
+split_offset = 570
+
+[node name="Chat?" parent="2TeamsLobby/PanelContainer/HSplitContainer/VSplitContainer" index="1"]
+visible = true
+
+[editable path="FFALobby"]
+[editable path="2TeamsLobby"]
