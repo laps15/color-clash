@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://djit8qia8kgwy"]
 
-[ext_resource type="Script" uid="uid://doqqrxsg4ja0u" path="res://addons/lobby_lib/Views/player_card.gd" id="1_lriyv"]
+[ext_resource type="Script" uid="uid://doqqrxsg4ja0u" path="res://Lobby/Views/player_card.gd" id="1_lriyv"]
 
 [node name="PlayerCard" type="PanelContainer" node_paths=PackedStringArray("player_color_picker", "player_name_label", "start_edit_button", "player_name_input", "save_name_button")]
 custom_minimum_size = Vector2(0, 30)

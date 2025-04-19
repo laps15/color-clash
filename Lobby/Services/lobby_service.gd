@@ -1,4 +1,3 @@
-@tool
 extends Node
 
 # These signals can be connected to by a UI lobby scene or the game scene.
