@@ -6,10 +6,10 @@ extends Node2D
 var queue = []
 
 @rpc
-func queue_brush(position: Vector2, colour: Color):
-	queue.push_back([position, colour])
+func queue_brush(paint_position: Vector2, color: Color):
+	queue.push_back([paint_position, color])
 	queue_redraw()
 
 func _draw() -> void:
 	for brush in queue:
-		draw_texture_rect(texture, Rect2(brush[0].x - brush_size/2, brush[0].y - brush_size/2, brush_size, brush_size), false, brush[1])
+		draw_texture_rect(texture, Rect2(brush[0].x - int(brush_size/2.), brush[0].y - int(brush_size/2.), brush_size, brush_size), false, brush[1])

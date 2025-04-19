@@ -1,0 +1,92 @@
+[gd_scene load_steps=6 format=3 uid="uid://bjg62qg4xigsr"]
+
+[ext_resource type="PackedScene" uid="uid://d14oyr8if81g0" path="res://Draw/draw_viewport.tscn" id="1_al8u0"]
+[ext_resource type="Script" uid="uid://dqdspjwuitb1j" path="res://Games/teams_game.gd" id="1_j5osl"]
+[ext_resource type="Script" uid="uid://vgjhtqi4cur0" path="res://multiplayer_spawner.gd" id="2_j5osl"]
+[ext_resource type="PackedScene" uid="uid://deudk8msb5gpw" path="res://Player/player.tscn" id="3_g6opp"]
+[ext_resource type="PackedScene" uid="uid://deiyobjnr63y" path="res://Maps/composite_level.tscn" id="4_76pkq"]
+
+[node name="Game" type="Node" node_paths=PackedStringArray("left_spawn_point_list", "right_spawn_point_list")]
+script = ExtResource("1_j5osl")
+left_spawn_point_list = NodePath("Level/LeftSpawn")
+right_spawn_point_list = NodePath("Level/RightSpawn")
+
+[node name="DrawViewport" parent="." instance=ExtResource("1_al8u0")]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.726575, 0.607224, -0.321509, 0, 0.46793, 0.883766, 0.687088, 0.642122, -0.339986, 294.031, 236.146, 98.5634)
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://deudk8msb5gpw")
+spawn_path = NodePath("..")
+script = ExtResource("2_j5osl")
+SpawnScene = ExtResource("3_g6opp")
+
+[node name="Projectiles" type="Node" parent="."]
+
+[node name="Level" parent="." instance=ExtResource("4_76pkq")]
+calculate_color_score = true
+
+[node name="LeftSpawn" type="Node" parent="Level"]
+
+[node name="SpawnPoint" type="Node3D" parent="Level/LeftSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8513, 0, 38.2522)
+
+[node name="SpawnPoint2" type="Node3D" parent="Level/LeftSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.82565, 0, 38.2522)
+
+[node name="SpawnPoint3" type="Node3D" parent="Level/LeftSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.9537, 0, 42.8122)
+
+[node name="SpawnPoint4" type="Node3D" parent="Level/LeftSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.9537, 0, 26.4581)
+
+[node name="SpawnPoint5" type="Node3D" parent="Level/LeftSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.4751, 0, 28.0866)
+
+[node name="SpawnPoint6" type="Node3D" parent="Level/LeftSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.9007, 0, 36.941)
+
+[node name="SpawnPoint7" type="Node3D" parent="Level/LeftSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43.021, 0, 44.1309)
+
+[node name="SpawnPoint8" type="Node3D" parent="Level/LeftSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.31015, 0, 44.1309)
+
+[node name="SpawnPoint9" type="Node3D" parent="Level/LeftSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.31015, 0, 29.1496)
+
+[node name="SpawnPoint10" type="Node3D" parent="Level/LeftSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.8619, 0, 29.1496)
+
+[node name="RightSpawn" type="Node" parent="Level"]
+
+[node name="SpawnPoint" type="Node3D" parent="Level/RightSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.896, 0, -33.6878)
+
+[node name="SpawnPoint2" type="Node3D" parent="Level/RightSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.9217, 0, -33.6878)
+
+[node name="SpawnPoint3" type="Node3D" parent="Level/RightSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.7937, 0, -29.1278)
+
+[node name="SpawnPoint4" type="Node3D" parent="Level/RightSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.7937, 0, -45.4818)
+
+[node name="SpawnPoint5" type="Node3D" parent="Level/RightSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.2722, 0, -43.8533)
+
+[node name="SpawnPoint6" type="Node3D" parent="Level/RightSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.84658, 0, -34.9989)
+
+[node name="SpawnPoint7" type="Node3D" parent="Level/RightSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.7263, 0, -27.8091)
+
+[node name="SpawnPoint8" type="Node3D" parent="Level/RightSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.4372, 0, -27.8091)
+
+[node name="SpawnPoint9" type="Node3D" parent="Level/RightSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.4372, 0, -42.7903)
+
+[node name="SpawnPoint10" type="Node3D" parent="Level/RightSpawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.8854, 0, -42.7903)

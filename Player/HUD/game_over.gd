@@ -16,7 +16,7 @@ func reveal() -> void:
 	self.timer.start(respawn_delay)
 	self.countdown.show()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not self.is_multiplayer_authority():
 		return
 

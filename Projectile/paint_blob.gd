@@ -4,7 +4,7 @@ class_name PaintBlob
 @export var color: Color = Color.YELLOW_GREEN
 @export var speed = 50.0
 
-@onready var level_map = $"/root/Main/Level"
+@onready var level_map = $"/root/Game/Level"
 @onready var mesh_instance = $Mesh
 
 @export var peer_id: String
@@ -21,8 +21,8 @@ func _ready() -> void:
 func set_start_velocity():
 	self.velocity = (global_transform.basis * Vector3.FORWARD).normalized() * self.speed;
 	
-func set_peer_id(peer_id: String) -> void:
-	self.peer_id = str(peer_id)
+func set_peer_id(new_peer_id: String) -> void:
+	self.peer_id = str(new_peer_id)
 	
 func _physics_process(delta: float) -> void:
 	if Time.get_ticks_msec() - self.spawned_at > 5000:

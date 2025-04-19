@@ -1,0 +1,25 @@
+[gd_scene load_steps=6 format=3 uid="uid://bnlf8u1rmrgon"]
+
+[ext_resource type="PackedScene" uid="uid://d14oyr8if81g0" path="res://Draw/draw_viewport.tscn" id="1_lo7vj"]
+[ext_resource type="Script" uid="uid://duht4jmjw804g" path="res://Games/ffa_game.gd" id="1_ye1k2"]
+[ext_resource type="Script" uid="uid://vgjhtqi4cur0" path="res://multiplayer_spawner.gd" id="2_ye1k2"]
+[ext_resource type="PackedScene" uid="uid://deudk8msb5gpw" path="res://Player/player.tscn" id="3_rgxpw"]
+[ext_resource type="PackedScene" uid="uid://deiyobjnr63y" path="res://Maps/composite_level.tscn" id="4_l2pc2"]
+
+[node name="Game" type="Node"]
+script = ExtResource("1_ye1k2")
+
+[node name="DrawViewport" parent="." instance=ExtResource("1_lo7vj")]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.726575, 0.607224, -0.321509, 0, 0.46793, 0.883766, 0.687088, 0.642122, -0.339986, 294.031, 236.146, 98.5634)
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://deudk8msb5gpw")
+spawn_path = NodePath("..")
+script = ExtResource("2_ye1k2")
+SpawnScene = ExtResource("3_rgxpw")
+
+[node name="Projectiles" type="Node" parent="."]
+
+[node name="Level" parent="." instance=ExtResource("4_l2pc2")]

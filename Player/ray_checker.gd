@@ -1,8 +1,8 @@
 extends Node3D
 
-@onready var level_map = $/root/Main/Level
+@onready var level_map = $/root/Game/Level
 
-func get_avg_normal(target_color: Color = Color.TRANSPARENT) -> Vector3:
+func get_avg_normal(_target_color: Color = Color.TRANSPARENT) -> Vector3:
 	var avg := Vector3.ZERO
 	var amount := 0
 	

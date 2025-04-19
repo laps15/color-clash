@@ -17,9 +17,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-UVPosition="*res://Services/uv_position.gd"
 ProcessProjectileCollisions="*res://Services/process_projectile_collisions.gd"
 UvPositionMultiMesh="*res://Services/uv_position_multi_mesh.gd"
+LobbyService="*res://Lobby/Services/lobby_service.gd"
 
 [input]
 

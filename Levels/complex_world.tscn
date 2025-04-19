@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bxku631uy2onw"]
 
-[ext_resource type="Script" uid="uid://duht4jmjw804g" path="res://main.gd" id="1_kgo26"]
+[ext_resource type="Script" uid="uid://duht4jmjw804g" path="res://Games/ffa_game.gd" id="1_kgo26"]
 [ext_resource type="PackedScene" uid="uid://deiyobjnr63y" path="res://Maps/composite_level.tscn" id="2_corfq"]
 
 [node name="Main" type="Node"]

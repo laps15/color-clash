@@ -2,7 +2,7 @@ extends Node3D
 
 @export var paint_scene: PackedScene
 
-@onready var projectiles = $"/root/Main/Projectiles"
+@onready var projectiles = $"/root/Game/Projectiles"
 
 var rng = RandomNumberGenerator.new()
 

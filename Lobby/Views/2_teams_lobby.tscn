@@ -1,0 +1,196 @@
+[gd_scene load_steps=5 format=3 uid="uid://djjivgknw8vqw"]
+
+[ext_resource type="Script" uid="uid://b1t37ju2ufrd7" path="res://Lobby/Views/2_teams_lobby.gd" id="1_ury33"]
+[ext_resource type="PackedScene" uid="uid://djit8qia8kgwy" path="res://Lobby/Views/player_card.tscn" id="2_0qucc"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ld1rt"]
+font_size = 40
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fdx03"]
+bg_color = Color(0, 0, 0, 0)
+
+[node name="2TeamsLobby" type="CanvasLayer" node_paths=PackedStringArray("left_team_player_list", "left_team_join_button", "right_team_player_list", "right_team_join_button", "queue_player_list", "queue_join_button", "start_game_button", "switch_game_mode_button", "confirm_start_dialog")]
+script = ExtResource("1_ury33")
+PlayerCardScene = ExtResource("2_0qucc")
+left_team_player_list = NodePath("PanelContainer/HSplitContainer/HSplitContainer/LeftContainer/LeftContainerList/PlayerList")
+left_team_join_button = NodePath("PanelContainer/HSplitContainer/HSplitContainer/LeftContainer/PanelContainer/JoinButton")
+right_team_player_list = NodePath("PanelContainer/HSplitContainer/HSplitContainer/RightContainer/RightContainerList/PlayerList")
+right_team_join_button = NodePath("PanelContainer/HSplitContainer/HSplitContainer/RightContainer/PanelContainer/JoinButton")
+queue_player_list = NodePath("PanelContainer/HSplitContainer/VSplitContainer/PanelContainer/Queue/VBoxContainer/PlayerList")
+queue_join_button = NodePath("PanelContainer/HSplitContainer/VSplitContainer/PanelContainer/Queue/VBoxContainer2/Ready/JoinButton")
+start_game_button = NodePath("PanelContainer/HSplitContainer/VSplitContainer/PanelContainer/Queue/VBoxContainer2/Start/StartGameButton")
+switch_game_mode_button = NodePath("PanelContainer/HSplitContainer/VSplitContainer/Chat?/SwitchToFFA")
+confirm_start_dialog = NodePath("AcceptDialog")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchor_right = 0.72
+anchor_bottom = 1.0
+offset_right = 0.559937
+offset_bottom = 2.0
+
+[node name="VSeparator" type="VSeparator" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_stretch_ratio = 0.0
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="PanelContainer"]
+layout_mode = 2
+split_offset = 830
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="PanelContainer/HSplitContainer"]
+layout_mode = 2
+split_offset = 410
+dragging_enabled = false
+dragger_visibility = 1
+
+[node name="LeftContainer" type="MarginContainer" parent="PanelContainer/HSplitContainer/HSplitContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="LeftContainerList" type="VBoxContainer" parent="PanelContainer/HSplitContainer/HSplitContainer/LeftContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="PanelContainer/HSplitContainer/HSplitContainer/LeftContainer/LeftContainerList"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Team 1"
+label_settings = SubResource("LabelSettings_ld1rt")
+
+[node name="PlayerList" type="VBoxContainer" parent="PanelContainer/HSplitContainer/HSplitContainer/LeftContainer/LeftContainerList"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/HSplitContainer/HSplitContainer/LeftContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_fdx03")
+
+[node name="JoinButton" type="Button" parent="PanelContainer/HSplitContainer/HSplitContainer/LeftContainer/PanelContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_vertical = 8
+text = "Join
+"
+
+[node name="RightContainer" type="MarginContainer" parent="PanelContainer/HSplitContainer/HSplitContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="RightContainerList" type="VBoxContainer" parent="PanelContainer/HSplitContainer/HSplitContainer/RightContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="PanelContainer/HSplitContainer/HSplitContainer/RightContainer/RightContainerList"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Team 2"
+label_settings = SubResource("LabelSettings_ld1rt")
+
+[node name="PlayerList" type="VBoxContainer" parent="PanelContainer/HSplitContainer/HSplitContainer/RightContainer/RightContainerList"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/HSplitContainer/HSplitContainer/RightContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_fdx03")
+
+[node name="JoinButton" type="Button" parent="PanelContainer/HSplitContainer/HSplitContainer/RightContainer/PanelContainer"]
+y_sort_enabled = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_vertical = 8
+text = "Join
+"
+
+[node name="VSplitContainer" type="VSplitContainer" parent="PanelContainer/HSplitContainer"]
+layout_mode = 2
+split_offset = 585
+dragging_enabled = false
+dragger_visibility = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/HSplitContainer/VSplitContainer"]
+layout_mode = 2
+
+[node name="Queue" type="MarginContainer" parent="PanelContainer/HSplitContainer/VSplitContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HSplitContainer/VSplitContainer/PanelContainer/Queue"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="PanelContainer/HSplitContainer/VSplitContainer/PanelContainer/Queue/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Queue"
+
+[node name="PlayerList" type="VBoxContainer" parent="PanelContainer/HSplitContainer/VSplitContainer/PanelContainer/Queue/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/HSplitContainer/VSplitContainer/PanelContainer/Queue"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/separation = 5
+
+[node name="Ready" type="PanelContainer" parent="PanelContainer/HSplitContainer/VSplitContainer/PanelContainer/Queue/VBoxContainer2"]
+layout_mode = 2
+
+[node name="JoinButton" type="Button" parent="PanelContainer/HSplitContainer/VSplitContainer/PanelContainer/Queue/VBoxContainer2/Ready"]
+visible = false
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_vertical = 8
+text = "Unready"
+
+[node name="Start" type="PanelContainer" parent="PanelContainer/HSplitContainer/VSplitContainer/PanelContainer/Queue/VBoxContainer2"]
+layout_mode = 2
+
+[node name="StartGameButton" type="Button" parent="PanelContainer/HSplitContainer/VSplitContainer/PanelContainer/Queue/VBoxContainer2/Start"]
+visible = false
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Start Game"
+
+[node name="Chat?" type="PanelContainer" parent="PanelContainer/HSplitContainer/VSplitContainer"]
+layout_mode = 2
+
+[node name="SwitchToFFA" type="Button" parent="PanelContainer/HSplitContainer/VSplitContainer/Chat?"]
+layout_mode = 2
+text = "Switch to FFA"
+
+[node name="AcceptDialog" type="AcceptDialog" parent="."]
+auto_translate_mode = 1
+title = "Not all players are ready"
+initial_position = 1
+size = Vector2i(245, 80)
+
+[connection signal="pressed" from="PanelContainer/HSplitContainer/HSplitContainer/LeftContainer/PanelContainer/JoinButton" to="." method="_on_join_left_button_pressed"]
+[connection signal="pressed" from="PanelContainer/HSplitContainer/HSplitContainer/RightContainer/PanelContainer/JoinButton" to="." method="_on_join_right_button_pressed"]
+[connection signal="pressed" from="PanelContainer/HSplitContainer/VSplitContainer/PanelContainer/Queue/VBoxContainer2/Ready/JoinButton" to="." method="_on_join_queue_button_pressed"]
+[connection signal="pressed" from="PanelContainer/HSplitContainer/VSplitContainer/PanelContainer/Queue/VBoxContainer2/Start/StartGameButton" to="." method="_on_start_game_button_pressed"]
