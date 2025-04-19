@@ -1,4 +1,0 @@
-[submodule "addons/lobby_lib"]
-	path = addons/lobby_lib
-	url = git@github.com:laps15/godot-mp-lobby.git
-	branch = lib

@@ -19,7 +19,7 @@ config/icon="res://icon.svg"
 
 ProcessProjectileCollisions="*res://Services/process_projectile_collisions.gd"
 UvPositionMultiMesh="*res://Services/uv_position_multi_mesh.gd"
-LobbyService="*res://addons/lobby_lib/Services/lobby_service.gd"
+LobbyService="*res://Lobby/Services/lobby_service.gd"
 
 [input]
 

@@ -1,0 +1,69 @@
+[gd_scene load_steps=2 format=3 uid="uid://icdargwf88w1"]
+
+[ext_resource type="Script" uid="uid://dr2260t65xep5" path="res://addons/lobby_lib/Views/landing_page.gd" id="1_xf0p6"]
+
+[node name="LandingPage" type="CanvasLayer" node_paths=PackedStringArray("address_input")]
+script = ExtResource("1_xf0p6")
+address_input = NodePath("PanelContainer/MarginContainer/VSplitContainer/MarginContainer3/VBoxContainer/HBoxContainer/LineEdit")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -145.0
+offset_top = -76.0
+offset_right = 145.0
+offset_bottom = 76.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VSplitContainer" type="VSplitContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+split_offset = 54
+dragging_enabled = false
+dragger_visibility = 1
+
+[node name="BoxContainer" type="BoxContainer" parent="PanelContainer/MarginContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="HostButton" type="Button" parent="PanelContainer/MarginContainer/VSplitContainer/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Host
+"
+
+[node name="MarginContainer3" type="MarginContainer" parent="PanelContainer/MarginContainer/VSplitContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VSplitContainer/MarginContainer3"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VSplitContainer/MarginContainer3/VBoxContainer"]
+layout_mode = 2
+
+[node name="JoinLabel" type="Label" parent="PanelContainer/MarginContainer/VSplitContainer/MarginContainer3/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Join:"
+
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/MarginContainer/VSplitContainer/MarginContainer3/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Addres"
+
+[node name="JoinButton" type="Button" parent="PanelContainer/MarginContainer/VSplitContainer/MarginContainer3/VBoxContainer"]
+layout_mode = 2
+text = "Join"
+
+[connection signal="pressed" from="PanelContainer/MarginContainer/VSplitContainer/BoxContainer/HostButton" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VSplitContainer/MarginContainer3/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
