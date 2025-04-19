@@ -7,6 +7,8 @@ extends Node
 @export var players_node: Node
 @export var map: Node3D
 @export var team_score_calculator: TeamScoreCalculator
+@export var round_timer: Timer
+@export var round_time: int = 180.
 
 @export var team_scores = {}
 
@@ -46,6 +48,7 @@ func _server_init():
 	ProcessProjectileCollisions.connect("palyer_hit", handle_player_hit)
 
 	self.spawn_players()
+	self.round_timer.start.rpc(self.round_time)
 
 func _pick_spawn_point(team: TeamsLobby.Team) -> Vector3:
 	var points_available = self.spawn_points[team].get_children()

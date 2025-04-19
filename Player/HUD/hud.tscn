@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://dqahacfl1sjqs"]
+[gd_scene load_steps=10 format=3 uid="uid://dqahacfl1sjqs"]
 
 [ext_resource type="Script" uid="uid://c4o0ohvx23nvw" path="res://Player/HUD/hud.gd" id="1_ns4kc"]
 [ext_resource type="Script" uid="uid://c0t8mmk000jvp" path="res://Player/HUD/game_over.gd" id="2_xtdgy"]
-[ext_resource type="PackedScene" uid="uid://btit410ye3d5o" path="res://Player/HPBar/hp_bar.tscn" id="4_1aaf1"]
+[ext_resource type="PackedScene" uid="uid://d3q8gmw60vx20" path="res://Player/HUD/round_timer.tscn" id="3_1aaf1"]
+[ext_resource type="PackedScene" uid="uid://btit410ye3d5o" path="res://Player/HUD/HPBar/hp_bar.tscn" id="4_1aaf1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ho6en"]
 bg_color = Color(1, 0.054902, 0.054902, 0.188235)
@@ -35,9 +36,15 @@ corner_radius_top_right = 15
 corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 
-[node name="HUD" type="CanvasLayer" node_paths=PackedStringArray("player_score_label")]
+[node name="HUD" type="CanvasLayer" node_paths=PackedStringArray("game_over_overlay", "kd_pannel", "hp_bar", "cross_hair", "player_name_label", "player_score_label", "timer")]
 script = ExtResource("1_ns4kc")
+game_over_overlay = NodePath("GameOver")
+kd_pannel = NodePath("KDPanel/Label")
+hp_bar = NodePath("HPBar")
+cross_hair = NodePath("CrossHair")
+player_name_label = NodePath("PlayerIdContainer/Label")
 player_score_label = NodePath("Score/Label")
+timer = NodePath("Timer/RoundTimer")
 
 [node name="GameOver" type="Panel" parent="."]
 visible = false
@@ -105,11 +112,27 @@ offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PlayerIdContainer" type="Panel" parent="."]
+[node name="Timer" type="Panel" parent="."]
 offset_left = 18.0
-offset_top = 11.0
+offset_top = 15.0
 offset_right = 122.0
-offset_bottom = 42.0
+offset_bottom = 46.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_m6twi")
+
+[node name="RoundTimer" parent="Timer" instance=ExtResource("3_1aaf1")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="PlayerIdContainer" type="Panel" parent="."]
+visible = false
+offset_left = 18.0
+offset_top = 15.0
+offset_right = 122.0
+offset_bottom = 46.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_m6twi")
 
 [node name="Label" type="Label" parent="PlayerIdContainer"]
@@ -143,15 +166,15 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_sndvk")
 metadata/_edit_use_anchors_ = true
 
 [node name="HPBar" parent="." instance=ExtResource("4_1aaf1")]
+custom_minimum_size = Vector2(10, 10)
 anchors_preset = -1
-anchor_left = 0.462674
-anchor_top = 0.0154321
-anchor_right = 0.493924
-anchor_bottom = 0.0354938
-offset_left = -6.10352e-05
-offset_top = 7.62939e-06
-offset_right = -6.10352e-05
-offset_bottom = 5.72205e-06
+anchor_top = 0.0401235
+anchor_bottom = 0.0401235
+offset_left = 0.0
+offset_top = 1.90735e-06
+offset_right = 0.0
+offset_bottom = 1.90735e-06
+metadata/_edit_use_anchors_ = true
 
 [node name="Score" type="Panel" parent="."]
 anchors_preset = 3

@@ -2,7 +2,7 @@ extends Panel
 
 @export var max_value: int = 0
 @export var current_value: int = 0
-@export var HeartPointScene: PackedScene = preload("res://Player/HPBar/hp_point.tscn")
+@export var HeartPointScene: PackedScene = preload("res://Player/HUD/HPBar/hp_point.tscn")
 
 @onready var hbox_container = $HBoxContainer
 

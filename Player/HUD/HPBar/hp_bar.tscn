@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://btit410ye3d5o"]
 
-[ext_resource type="Script" uid="uid://cqmmes0trenea" path="res://Player/HPBar/hp_bar.gd" id="1_ntvna"]
+[ext_resource type="Script" uid="uid://cqmmes0trenea" path="res://Player/HUD/HPBar/hp_bar.gd" id="1_ntvna"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ntvna"]
 bg_color = Color(0, 0, 0, 0.164706)

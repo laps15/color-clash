@@ -12,7 +12,7 @@ properties/0/path = NodePath(".:team_scores")
 properties/0/spawn = true
 properties/0/replication_mode = 1
 
-[node name="Game" type="Node" node_paths=PackedStringArray("left_spawn_point_list", "right_spawn_point_list", "spawner", "players_node", "map", "team_score_calculator")]
+[node name="Game" type="Node" node_paths=PackedStringArray("left_spawn_point_list", "right_spawn_point_list", "spawner", "players_node", "map", "team_score_calculator", "round_timer")]
 script = ExtResource("1_j5osl")
 left_spawn_point_list = NodePath("Level/LeftSpawn")
 right_spawn_point_list = NodePath("Level/RightSpawn")
@@ -20,6 +20,7 @@ spawner = NodePath("MultiplayerSpawner")
 players_node = NodePath("Players")
 map = NodePath("Level")
 team_score_calculator = NodePath("TeamScoreCalculator")
+round_timer = NodePath("RoundTimer")
 
 [node name="DrawViewport" parent="." instance=ExtResource("1_al8u0")]
 
@@ -108,3 +109,6 @@ script = ExtResource("6_g6opp")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_g6opp")
+
+[node name="RoundTimer" type="Timer" parent="."]
+wait_time = 180.0

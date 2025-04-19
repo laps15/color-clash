@@ -1,11 +1,12 @@
 extends CanvasLayer
 
-@onready var game_over_overlay = $GameOver
-@onready var kd_pannel = $KDPanel/Label
-@onready var hp_bar = $HPBar
-@onready var cross_hair = $CrossHair
-@onready var player_name_label = $PlayerIdContainer/Label
+@export var game_over_overlay: Panel
+@export var kd_pannel: Label
+@export var hp_bar: Panel
+@export var cross_hair: Panel
+@export var player_name_label: Label
 @export var player_score_label: Label
+@export var timer: RoundTimer
 
 var player_ref: Player = null
 var kills: int = 0
@@ -14,12 +15,15 @@ var score: int = 0
 
 func _ready():
 	if not self.is_multiplayer_authority():
+		self.hide()
 		return
 
 	self.game_over_overlay.hide()
 	self.update_kd_display()
 	self.set_player_name()
 	self.set_player_score(0)
+	self.timer.start()
+	#self.set_timer(0)
 
 func display_game_over(player: Player) -> void:
 	if not self.is_multiplayer_authority():
@@ -70,4 +74,3 @@ func _on_respawn_button_pressed() -> void:
 	
 func set_player_score(score: int) -> void:
 	self.player_score_label.text = "%010d" % score
-	

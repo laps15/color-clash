@@ -370,6 +370,13 @@ func uncrouch():
 		await get_tree().create_timer(0.1).timeout
 		self.uncrouch.rpc()
 
+@rpc("call_local")
+func set_score(score: int) -> void:
+	print("On #", multiplayer.get_unique_id(), "At #", self.name, " updating score to: ", score)
+	if not self.is_multiplayer_authority():
+		return
+	self.hud.set_player_score(score)
+
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 	#if anim_name == "Shoot":
 		#anim_player.play("Idle")
@@ -385,10 +392,3 @@ func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 func _on_animation_player_animation_started(anim_name: StringName) -> void:
 	if anim_name == "Crouch":
 		self.is_crouched = !self.is_crouched
-
-@rpc("call_local")
-func set_score(score: int) -> void:
-	print("On #", multiplayer.get_unique_id(), "At #", self.name, " updating score to: ", score)
-	if not self.is_multiplayer_authority():
-		return
-	self.hud.set_player_score(score)
