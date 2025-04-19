@@ -4,8 +4,11 @@ extends Node
 @export var left_spawn_point_list: Node
 @export var right_spawn_point_list: Node
 @export var spawner: MultiplayerSpawner
+@export var players_node: Node
 @export var map: Node3D
 @export var team_score_calculator: TeamScoreCalculator
+
+@export var team_scores = {}
 
 var spawn_points
 var team_colors = {
@@ -14,6 +17,7 @@ var team_colors = {
 }
 
 func _ready() -> void:
+	self.update_scores()
 	if not multiplayer.is_server():
 		LobbyService.player_loaded.rpc_id(1)
 		return
@@ -34,6 +38,7 @@ func _ready() -> void:
 	print(team_colors)
 	self.team_score_calculator.set_player_colors([team_colors[TeamsLobby.Team.LEFT], team_colors[TeamsLobby.Team.RIGHT]])
 	self.team_score_calculator.init_texture_map(self.map.mesh_viewport_map)
+	self.team_score_calculator.start_calculation()
 	LobbyService.player_loaded.rpc_id(1)
 
 func _server_init():
@@ -64,7 +69,7 @@ func spawn_players():
 		})
 		
 		if player.get_parent() == null and player_id == 1:
-			self.add_child(player)
+			self.players_node.add_child(player)
 		
 		print(str("Player #", player_id, " spawned."))
 
@@ -76,11 +81,22 @@ func handle_player_hit(hitter: String, hittee: String) -> void:
 	if not multiplayer.is_server():
 		return
 
-	var attacker = self.get_node(str(hitter)) as Player
-	var target = self.get_node(str(hittee)) as Player
+	var attacker = self.players_node.get_node(str(hitter)) as Player
+	var target = self.players_node.get_node(str(hittee)) as Player
 
 	if attacker.color == target.color:
 		return
 
 	print(str("At #", multiplayer.get_unique_id(), " #", str(hitter).to_int(), " hitted #", str(hittee).to_int()))
 	target.take_damage.rpc_id(str(hittee).to_int(), attacker.get_path())
+
+func update_scores():
+	if multiplayer.is_server():
+		self.team_scores = self.team_score_calculator.get_score()
+		print("SCORE: ", self.team_scores)
+	
+	var my_player = self.players_node.get_node(str(multiplayer.get_unique_id())) as Player
+	if my_player != null:
+		my_player.set_score.rpc(self.team_scores[my_player.color])
+	await self.get_tree().create_timer(1).timeout
+	self.update_scores()

@@ -41,9 +41,11 @@ func _ready():
 	self.mutexes["QUIT"] = Mutex.new()
 	self.mutexes["SCORE"] = Mutex.new()
 	self.color_score_thread = Thread.new()
-	self.color_score_thread.start(self.calculate_score)
 	print("Connecting map_hit")
 	ProcessProjectileCollisions.map_hit.connect(self.queue_score_calculation)
+
+func start_calculation() -> void:
+	self.color_score_thread.start(self.calculate_score)
 
 func get_score_by_mesh(mesh_id: int) -> Variant:
 	var score = {}
@@ -57,7 +59,8 @@ func get_score_by_mesh(mesh_id: int) -> Variant:
 			var color = texture_image.get_pixel(y,x)
 			if color in score:
 				score[color] += 1
-	
+			elif color != Color(0,0,0,0):
+				print("Color: ", color, " not found on color list")
 	return score
 
 func calculate_score() -> void:
@@ -87,19 +90,14 @@ func calculate_score() -> void:
 		score_by_mesh[mesh_id] = new_score_for_mesh
 		(self.mutexes["SCORE"] as Mutex).unlock()
 
-		print("SCORE: ", self.color_score)
-
 func queue_score_calculation(mesh_path: NodePath, _pos: Vector2, _color: Color):
 	print("Queueing score calculation")
 	await RenderingServer.frame_post_draw
 	self.score_queue.push_back(self.get_node(mesh_path).get_instance_id())
 	self.semaphore.post()
 
-func get_score(color: Color) -> int:
-	print("Queueing score calculation")
-	var score = 0
+func get_score() -> Variant:
 	(self.mutexes["SCORE"] as Mutex).lock()
-	if color in self.color_score:
-		score = self.color_score[color]
+	var score = self.color_score
 	(self.mutexes["SCORE"] as Mutex).unlock()
 	return score

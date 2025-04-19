@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bjg62qg4xigsr"]
+[gd_scene load_steps=8 format=3 uid="uid://bjg62qg4xigsr"]
 
 [ext_resource type="PackedScene" uid="uid://d14oyr8if81g0" path="res://Draw/draw_viewport.tscn" id="1_al8u0"]
 [ext_resource type="Script" uid="uid://dqdspjwuitb1j" path="res://Games/teams_game.gd" id="1_j5osl"]
@@ -7,11 +7,17 @@
 [ext_resource type="PackedScene" uid="uid://deiyobjnr63y" path="res://Maps/composite_level.tscn" id="4_76pkq"]
 [ext_resource type="Script" uid="uid://d2adwtdm44xww" path="res://Services/team_score_calculator.gd" id="6_g6opp"]
 
-[node name="Game" type="Node" node_paths=PackedStringArray("left_spawn_point_list", "right_spawn_point_list", "spawner", "map", "team_score_calculator")]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_g6opp"]
+properties/0/path = NodePath(".:team_scores")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="Game" type="Node" node_paths=PackedStringArray("left_spawn_point_list", "right_spawn_point_list", "spawner", "players_node", "map", "team_score_calculator")]
 script = ExtResource("1_j5osl")
 left_spawn_point_list = NodePath("Level/LeftSpawn")
 right_spawn_point_list = NodePath("Level/RightSpawn")
 spawner = NodePath("MultiplayerSpawner")
+players_node = NodePath("Players")
 map = NodePath("Level")
 team_score_calculator = NodePath("TeamScoreCalculator")
 
@@ -22,11 +28,13 @@ transform = Transform3D(-0.726575, 0.607224, -0.321509, 0, 0.46793, 0.883766, 0.
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://deudk8msb5gpw")
-spawn_path = NodePath("..")
+spawn_path = NodePath("../Players")
 script = ExtResource("2_j5osl")
 SpawnScene = ExtResource("3_g6opp")
 
 [node name="Projectiles" type="Node" parent="."]
+
+[node name="Players" type="Node" parent="."]
 
 [node name="Level" parent="." instance=ExtResource("4_76pkq")]
 calculate_color_score = true
@@ -97,3 +105,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.8854, 0, -42.7903)
 
 [node name="TeamScoreCalculator" type="Node" parent="."]
 script = ExtResource("6_g6opp")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_g6opp")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dqahacfl1sjqs"]
+[gd_scene load_steps=9 format=3 uid="uid://dqahacfl1sjqs"]
 
 [ext_resource type="Script" uid="uid://c4o0ohvx23nvw" path="res://Player/HUD/hud.gd" id="1_ns4kc"]
 [ext_resource type="Script" uid="uid://c0t8mmk000jvp" path="res://Player/HUD/game_over.gd" id="2_xtdgy"]
@@ -28,8 +28,16 @@ corner_radius_top_right = 99
 corner_radius_bottom_right = 99
 corner_radius_bottom_left = 99
 
-[node name="HUD" type="CanvasLayer"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xtdgy"]
+bg_color = Color(0, 0, 0, 0.235294)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[node name="HUD" type="CanvasLayer" node_paths=PackedStringArray("player_score_label")]
 script = ExtResource("1_ns4kc")
+player_score_label = NodePath("Score/Label")
 
 [node name="GameOver" type="Panel" parent="."]
 visible = false
@@ -144,6 +152,36 @@ offset_left = -6.10352e-05
 offset_top = 7.62939e-06
 offset_right = -6.10352e-05
 offset_bottom = 5.72205e-06
+
+[node name="Score" type="Panel" parent="."]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -175.0
+offset_top = -103.0
+offset_right = -21.0
+offset_bottom = -63.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_xtdgy")
+
+[node name="Label" type="Label" parent="Score"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -11.5
+offset_right = 5.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
 
 [connection signal="pressed" from="GameOver/VBoxContainer/RespawnButton" to="." method="_on_respawn_button_pressed"]
 [connection signal="timeout" from="GameOver/Timer" to="GameOver" method="_on_timer_timeout"]
