@@ -55,6 +55,7 @@ func init_mesh_properties(mesh_instance: MeshInstance3D):
 
 @rpc("call_local")
 func paint(mesh_path: NodePath, pos: Vector2, color: Color = Color.RED):
+	print("At #", multiplayer.get_unique_id(), " hit detected at ", pos)
 	var node = self.get_node(mesh_path)
 	var mesh_unique_id = node.get_instance_id()
 	var viewport_size = mesh_viewport_map[mesh_unique_id].size

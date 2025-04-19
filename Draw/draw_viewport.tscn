@@ -10,5 +10,5 @@ script = ExtResource("1_si04e")
 
 [node name="Brush" type="Node2D" parent="."]
 script = ExtResource("1_xylhq")
-texture = ExtResource("2_si04e")
+texture = Array[Texture2D]([ExtResource("2_si04e")])
 brush_size = 250

@@ -45,14 +45,13 @@ func spawn_players():
 		var team = player_info["team"]
 		if team_color[team] == null:
 			team_color[team] = player_info["color"]
-		var color = team_color[team]
 		
 		var initial_pos = self._pick_spawn_point(team)
 		
 		var player = self.spawner.spawn({
 			'peer_id': player_id,
 			'player_name': player_info["name"],
-			'color': color,
+			'color': team_color[team],
 			'initial_pos': initial_pos
 		})
 		

@@ -35,7 +35,6 @@ func _physics_process(delta: float) -> void:
 
 	var slide_collision_count = self.get_slide_collision_count()
 	if slide_collision_count > 0:
-		for i in range(slide_collision_count):
-			var collision = self.get_slide_collision(i)
-			ProcessProjectileCollisions.process_collision(collision, str(self.peer_id).to_int(), self.color)
+		var collision = self.get_slide_collision(0)
+		ProcessProjectileCollisions.process_collision(collision, str(self.peer_id).to_int(), self.color)
 		self.queue_free()
