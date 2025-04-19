@@ -65,7 +65,6 @@ func _ready() -> void:
 	if not self.is_multiplayer_authority():
 		return
 
-	print("on #", multiplayer.get_unique_id(), " #", self.name, " _ready. mpa is #", self.get_multiplayer_authority())
 	self.uncrouch_shape_cast.add_exception(self)
 
 	self.ball_mesh_instance.hide()
@@ -137,7 +136,6 @@ func _unhandled_humanoid_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("reload") and not self.is_reloading():
 		self.play_reload_effects.rpc()
 	if Input.is_action_just_pressed("shoot") and not self.is_shooting() and not self.is_reloading():
-		print("on #", multiplayer.get_unique_id(), " #", self.name, " _unhandled_humanoid_input. mpa is #", self.get_multiplayer_authority())
 		self.play_shoot_effects.rpc()
 
 func _unhandled_ball_input(_event: InputEvent) -> void:

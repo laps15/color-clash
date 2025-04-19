@@ -30,7 +30,6 @@ theme_override_constants/separation = 5
 [node name="ColorPickerButton" type="ColorPickerButton" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
-disabled = true
 edit_alpha = false
 
 [node name="PlayerName" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]

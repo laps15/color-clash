@@ -7,14 +7,6 @@ extends Node3D
 var mesh_viewport_map = {}
 var child_meshes = {}
 
-var color_score_thread: Thread
-var color_score_semaphore: Semaphore
-var hit_queue = []
-var viewport_mutex = {}
-var color_score = {}
-var color_score_by_mesh = {}
-var exit_thread = true
-
 var mesh_to_texture_map = {
 	"floor": "res://Maps/Resources/floor_texture.png",
 	"box": "res://Maps/Resources/box_texture.png",
@@ -25,7 +17,7 @@ func _ready():
 	for child in self.find_children("*", "MeshInstance3D", true):
 		self.init_mesh_properties(child as MeshInstance3D)
 
-	if self.is_multiplayer_authority():
+	if multiplayer.is_server():
 		ProcessProjectileCollisions.connect("map_hit", self.paint.rpc)
 
 func init_mesh_properties(mesh_instance: MeshInstance3D):
@@ -49,7 +41,7 @@ func init_mesh_properties(mesh_instance: MeshInstance3D):
 	shader_material.set_shader_parameter("Texture", load(self.mesh_to_texture_map[mesh_instance.name]))
 	shader_material.set_shader_parameter("Paint", viewport.get_texture())
 	mesh_instance.mesh.surface_set_material(0, shader_material)
-	
+
 	child_meshes[mesh_unique_id] = mesh_instance
 	self.add_child(viewport)
 
@@ -62,6 +54,8 @@ func paint(mesh_path: NodePath, pos: Vector2, color: Color = Color.RED):
 	var converted_pos = Vector2(pos[0] * viewport_size[0], pos[1] * viewport_size[1])
 	mesh_viewport_map[mesh_unique_id].paint(converted_pos, color)
 	
+	print("Color at pos: ", get_color_at_pos(mesh_unique_id, pos))
+
 func get_color_at_pos(mesh_unique_id: int, pos: Vector2) -> Color:
 	var viewPort = mesh_viewport_map[mesh_unique_id] as SubViewport
 	var color = viewPort.get_texture().get_image().get_pixel(pos[0] * viewPort.size[0], pos[1] * viewPort.size[1])

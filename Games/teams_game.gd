@@ -3,10 +3,15 @@ extends Node
 @export var current_level: PackedScene
 @export var left_spawn_point_list: Node
 @export var right_spawn_point_list: Node
-
-@onready var spawner = $MultiplayerSpawner
+@export var spawner: MultiplayerSpawner
+@export var map: Node3D
+@export var team_score_calculator: TeamScoreCalculator
 
 var spawn_points
+var team_colors = {
+	TeamsLobby.Team.LEFT: Color.TRANSPARENT,
+	TeamsLobby.Team.RIGHT: Color.TRANSPARENT,
+}
 
 func _ready() -> void:
 	if not multiplayer.is_server():
@@ -19,6 +24,16 @@ func _ready() -> void:
 		TeamsLobby.Team.RIGHT: self.right_spawn_point_list,
 	}
 	LobbyService.all_players_loaded.connect(self._server_init)
+
+	for player_id in LobbyService.players:
+		var player_info = LobbyService.players[player_id]
+		var team = player_info["team"]
+		if team_colors[team] == Color.TRANSPARENT:
+			team_colors[team] = player_info["color"]
+
+	print(team_colors)
+	self.team_score_calculator.set_player_colors([team_colors[TeamsLobby.Team.LEFT], team_colors[TeamsLobby.Team.RIGHT]])
+	self.team_score_calculator.init_texture_map(self.map.mesh_viewport_map)
 	LobbyService.player_loaded.rpc_id(1)
 
 func _server_init():
@@ -35,23 +50,16 @@ func _pick_spawn_point(team: TeamsLobby.Team) -> Vector3:
 	return chosen.position
 
 func spawn_players():
-	var team_color = {
-		TeamsLobby.Team.LEFT: null,
-		TeamsLobby.Team.RIGHT: null,
-	}
-	
 	for player_id in LobbyService.players:
 		var player_info = LobbyService.players[player_id]
 		var team = player_info["team"]
-		if team_color[team] == null:
-			team_color[team] = player_info["color"]
 		
 		var initial_pos = self._pick_spawn_point(team)
 		
 		var player = self.spawner.spawn({
 			'peer_id': player_id,
 			'player_name': player_info["name"],
-			'color': team_color[team],
+			'color': team_colors[team],
 			'initial_pos': initial_pos
 		})
 		
